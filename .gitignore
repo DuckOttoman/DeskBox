@@ -1,0 +1,10 @@
+/target/
+/.tools/
+/deliverables/
+/bin/
+/gen/
+/evidence/*.log
+/evidence/*/
+*.tmp
+.env
+.env.*

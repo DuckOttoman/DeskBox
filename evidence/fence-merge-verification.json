@@ -1,0 +1,25 @@
+{
+  "runtime_archive": "D:\\Users\\Liang\\AppData\\Local\\DeskBox\\deskbox-reconstructed\\deliverables\\deskbox-reconstructed-windows-x64-fence-merge.zip",
+  "executable_sha256": "a07a874de649aef2b476131fa6a1c6157ec4758efe48b6226dac7d6cd46cfca3",
+  "core_tests_passed": 40,
+  "native_merge_checks": [
+    "FRONTEND_CONTRACT_CHECKS merge_dom:[\"4620e0f4-2f5c-4db7-922c-790026ab76aa\",\"56984f81-eb10-48ee-abfd-e186b130ce98\",\"cd8d4327-50d1-42b0-a015-f5afde48b72e\"], merge_store:{\"fences\":[{\"id\":\"4620e0f4-2f5c-4db7-922c-790026ab76aa\",\"monitor\":\"\\\\\\\\.\\\\DISPLAY1\",\"visible\":true},{\"id\":\"56984f81-eb10-48ee-abfd-e186b130ce98\",\"monitor\":\"\\\\\\\\.\\\\DISPLAY1\",\"visible\":true},{\"id\":\"cd8d4327-50d1-42b0-a015-f5afde48b72e\",\"monitor\":\"\\\\\\\\.\\\\DISPLAY1\",\"visible\":true}],\"monitors\":[{\"name\":\"\\\\\\\\.\\\\DISPLAY1\",\"label\":\"overlay-0\",\"x\":0,\"y\":0,\"w\":2560,\"h\":1440,\"scale\":1,\"work\":[0,0,2560,1392],\"primary\":true}],\"fencesVisible\":true}",
+    "FRONTEND_CONTRACT_CHECKS group_preview_bubble",
+    "FRONTEND_CONTRACT_CHECKS group_preview_no_commit",
+    "FRONTEND_CONTRACT_CHECKS group_release_preserves_properties",
+    "FRONTEND_CONTRACT_CHECKS group_title_switch_menu",
+    "FRONTEND_CONTRACT_CHECKS group_active_member_switch",
+    "FRONTEND_CONTRACT_CHECKS group_drag_detaches_current",
+    "FRONTEND_CONTRACT_CHECKS contents_preview_after_5s",
+    "FRONTEND_CONTRACT_CHECKS held_contents_never_commits",
+    "FRONTEND_CONTRACT_CHECKS cancel_restores_all",
+    "FRONTEND_CONTRACT_CHECKS second_hold_no_restore_point",
+    "FRONTEND_CONTRACT_CHECKS contents_release_commits",
+    "FRONTEND_CONTRACT_CHECKS contents_target_properties",
+    "FRONTEND_CONTRACT_CHECKS restore_submenu",
+    "FRONTEND_CONTRACT_CHECKS restore_consumed_and_split",
+    "FRONTEND_CONTRACT_CHECKS restore_inherits_live_target_properties",
+    "FRONTEND_CONTRACT_CHECKS group_preview_bubble, group_preview_no_commit, group_release_preserves_properties, group_title_switch_menu, group_active_member_switch, group_drag_detaches_current, contents_preview_after_5s, held_contents_never_commits, cancel_restores_all, second_hold_no_restore_point, contents_release_commits, contents_target_properties, restore_submenu, restore_consumed_and_split, restore_inherits_live_target_properties, fence_merge_release"
+  ],
+  "real_pointer_full_flow_verified": false
+}

@@ -1,0 +1,48 @@
+{
+  "deskbox-reconstructed.exe": [
+    "KERNEL32.dll",
+    "USER32.dll",
+    "WebView2Loader.dll",
+    "advapi32.dll",
+    "api-ms-win-core-synch-l1-2-0.dll",
+    "api-ms-win-core-winrt-error-l1-1-0.dll",
+    "bcryptprimitives.dll",
+    "combase.dll",
+    "comctl32.dll",
+    "dwmapi.dll",
+    "gdi32.dll",
+    "imm32.dll",
+    "kernel32.dll",
+    "msvcrt.dll",
+    "ntdll.dll",
+    "ole32.dll",
+    "oleaut32.dll",
+    "shell32.dll",
+    "shlwapi.dll",
+    "user32.dll"
+  ],
+  "WebView2Loader.dll": [
+    "KERNEL32.dll"
+  ],
+  "media-tools/ffmpeg.exe": [
+    "ADVAPI32.dll",
+    "AVICAP32.dll",
+    "CRYPT32.dll",
+    "GDI32.dll",
+    "IMM32.dll",
+    "IPHLPAPI.DLL",
+    "KERNEL32.dll",
+    "OLEAUT32.dll",
+    "SETUPAPI.dll",
+    "SHELL32.dll",
+    "SHLWAPI.dll",
+    "USER32.dll",
+    "VERSION.dll",
+    "WINMM.dll",
+    "WS2_32.dll",
+    "bcrypt.dll",
+    "msvcrt.dll",
+    "ncrypt.dll",
+    "ole32.dll"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "DeskBox Reconstructed",
+  "version": "0.1.0",
+  "identifier": "com.deskbox.reconstructed",
+  "build": { "frontendDist": "frontend" },
+  "app": {
+    "windows": [],
+    "security": { "csp": null, "assetProtocol": { "enable": true, "scope": ["$APPLOCALDATA/**"] } }
+  },
+  "bundle": { "active": false, "icon": ["icons/icon.ico", "icons/icon.png"] }
+}

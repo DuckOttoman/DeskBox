@@ -1,0 +1,14 @@
+{
+  "runtime_archive": "D:\\Users\\Liang\\AppData\\Local\\DeskBox\\deskbox-reconstructed\\deliverables\\deskbox-reconstructed-windows-x64-fence-merge-drag-fix.zip",
+  "executable_sha256": "7644db4a3e9be98f84c0f3d4e37480f016da75c66270bebf8987e531e73ecf33",
+  "real_mouse_focus_handoff_drag_saved": true,
+  "first_observed_saved_position": [
+    129,
+    191
+  ],
+  "second_automated_drag_interrupted_by_user_input": true,
+  "pointer_regression_passed": true,
+  "native_merge_menu_settings_passed": true,
+  "desktop_child_window_full_flow_verified": false,
+  "core_tests_recorded": 40
+}

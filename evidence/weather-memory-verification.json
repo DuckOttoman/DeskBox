@@ -1,0 +1,17 @@
+{
+  "release_sha256": "b07f0d54193d93a5a32ccb687f5d7aff28eea2b5fe916e430d4c2dc5ddd921d5",
+  "emoji_medium_large": true,
+  "native_working_set_trim": true,
+  "ball_menu_click_feedback": true,
+  "ip_city_live_and_forecast": true,
+  "ip_offline_manual_fallback": true,
+  "manual_city_override_protected": true,
+  "existing_widgets_and_restart": true,
+  "video_quality_changed": false,
+  "gpu_memory_reduction_promised": false,
+  "scope": "self and creation-time-validated WebView2 descendants",
+  "ip_providers": [
+    "ipapi.co",
+    "ipinfo.io"
+  ]
+}

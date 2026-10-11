@@ -1,0 +1,54 @@
+[
+  {
+    "path": "assets/fence-merge.css",
+    "sha256": "73de1d4c38ac38e0586f1675feab7b81a5d51e75b2483644108da9708e23c8b3"
+  },
+  {
+    "path": "assets/fence-merge.js",
+    "sha256": "7f1f3fdbe6aeb2b185ce5b08e3e1d102e818b4dc10a37a42e944c96837c9ded2"
+  },
+  {
+    "path": "assets/index-B3Mcm4P1.js",
+    "sha256": "3e08eef5f3e8fbe65e04db0d053358302234b81b7f1f038128e720a353587e11"
+  },
+  {
+    "path": "assets/media-background.css",
+    "sha256": "4823411db4f60c256855d60d0a496e616b0a29cd7d51be19bb3a0c91138c8efc"
+  },
+  {
+    "path": "assets/media-background.js",
+    "sha256": "aa4d73a807f3901801dbad43e45989c834120c0290a0352a95ef53643fbdaad7"
+  },
+  {
+    "path": "assets/menu-layout.css",
+    "sha256": "126e2d4e6260206342a289e2275204d0779c344e7401db4c8b3146039e284fc0"
+  },
+  {
+    "path": "assets/menu-layout.js",
+    "sha256": "c6679c99f9339299067d78e443702216d86fab236a972e9ca7444674bd55b66f"
+  },
+  {
+    "path": "assets/rename-dialog.css",
+    "sha256": "8f7a0485f776feb9807f3fd1eb5c316e772cb7accc8f3107850e96a6e9706344"
+  },
+  {
+    "path": "assets/rename-dialog.js",
+    "sha256": "03835e6cc3bef148f353a80445c7938800af238ff37c6834d982002453d66943"
+  },
+  {
+    "path": "assets/style-CmwEWWp6.css",
+    "sha256": "6ef8ae1f37eddfcde2c3cf5372958d65e99704fd01e7b0f15816fc3c79093242"
+  },
+  {
+    "path": "assets/widgets.css",
+    "sha256": "087145fa7c52b68170611bc212a2849e0350a55a94aa7fb90431f0f76e63853c"
+  },
+  {
+    "path": "assets/widgets.js",
+    "sha256": "f9455eafcbe025484da129c1d5e1dc21d73fa77e8063bb44bd598cb08cd5ea1c"
+  },
+  {
+    "path": "index.html",
+    "sha256": "4cb20377303e7ff8f9d76921b273a2024bdfef13b5cbbee173107b33e67b37d1"
+  }
+]

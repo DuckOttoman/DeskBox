@@ -1,0 +1,20 @@
+{
+  "runtime_archive": "D:\\Users\\Liang\\AppData\\Local\\DeskBox\\deskbox-reconstructed\\deliverables\\deskbox-reconstructed-windows-x64-media-background.zip",
+  "executable_sha256": "360cdc00bb586c0e8fbe1bb858fa56eeffcb57f20ff0b1d226e7e789b9d76a02",
+  "native_checks": [
+    "media_eco_actual_480p",
+    "media_clock_advances",
+    "media_two_ui_modes",
+    "media_original_actual_resolution",
+    "media_no_poster_ghosting",
+    "media_collapsed_releases_source",
+    "media_gif_loaded",
+    "media_static_replacement_visible",
+    "media_clear_removes_decoder",
+    "MEDIA_NATIVE_SUCCESS"
+  ],
+  "cpu_gpu_percent_measured": false,
+  "physical_lock_battery_saver_tested": false,
+  "rust_core_tests_passed": 45,
+  "original_executable_sha256": "86712e4115ffe403c153bb96803c755a5afe6efa9f8f02171f4c62326f3509a7"
+}

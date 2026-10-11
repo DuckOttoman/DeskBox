@@ -1,0 +1,12 @@
+const assert=require('node:assert/strict');
+const {HoverSession}=require('../ui/fence-merge.js');
+let now=0;let commits=[];
+const s=new HoverSession(()=>now);
+s.enter('b');now=4999;assert.equal(s.mode(),'group');assert.deepEqual(commits,[]);
+now=5000;assert.equal(s.mode(),'contents');assert.deepEqual(commits,[]);
+assert.deepEqual(s.release(),{target:'b',mode:'contents'});
+s.enter('b');now+=6000;s.leave();assert.equal(s.release(),null);
+s.enter('b');now+=4999;s.enter('c');assert.equal(s.mode(),'group');
+now+=5000;s.cancel();assert.equal(s.release(),null);
+s.enter('b');now+=6000;s.enter('b');assert.equal(s.mode(),'contents');
+console.log('FENCE_MERGE_TIMING_OK: preview does not commit; release, exact threshold, leave/reset/cancel');

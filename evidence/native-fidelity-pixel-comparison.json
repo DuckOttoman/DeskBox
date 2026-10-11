@@ -1,0 +1,11 @@
+{
+  "original_images": 204,
+  "extracted_images": 197,
+  "pixel_identical_to_original_cache": 60,
+  "different_or_new": 137,
+  "preliminary_pixel_identical": 178,
+  "final_comparable_preliminary_matches": 178,
+  "final_mean_absolute_channel_error_median": 0.0023057725694444445,
+  "final_mean_absolute_channel_error_max": 0.9040256076388888,
+  "note": "Final extraction has small pixel differences from the first run; cause not established. Final exact matches reported separately. No claim all icons identical."
+}

@@ -1,0 +1,22 @@
+{
+  "runtime_archive": "D:\\Users\\Liang\\AppData\\Local\\DeskBox\\deskbox-reconstructed\\deliverables\\deskbox-reconstructed-windows-x64-icon-names-radius.zip",
+  "executable_sha256": "9e191803cd08a322c97aeec16e976e193641bfb8f6f0a8a2db1e634fb8bd158f",
+  "native_checks": [
+    "media_eco_actual_480p",
+    "media_clock_advances",
+    "media_two_ui_modes",
+    "media_original_actual_resolution",
+    "media_no_poster_ghosting",
+    "media_collapsed_releases_source",
+    "media_gif_loaded",
+    "media_static_replacement_visible",
+    "media_clear_removes_decoder",
+    "ICON_RADIUS_NATIVE_SUCCESS",
+    "media_rounded_clip_matches_fence",
+    "media_radius_change_updates_clip",
+    "icon_names_hidden_preserve_items_and_tooltips",
+    "icon_names_show_restores_labels"
+  ],
+  "cpu_gpu_percent_measured": false,
+  "physical_lock_battery_saver_tested": false
+}

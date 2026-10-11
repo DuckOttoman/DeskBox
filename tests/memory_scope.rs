@@ -1,0 +1,2 @@
+use deskbox_reconstructed::memory::{owned_descendants,Process};
+#[test]fn excludes_unrelated_and_reused_parents(){let p=|id,parent,name:&str,born|Process{id,parent,name:name.into(),born};let list=vec![p(1,0,"deskbox.exe",10),p(2,1,"msedgewebview2.exe",11),p(3,2,"msedgewebview2.exe",12),p(4,0,"msedgewebview2.exe",13),p(5,1,"other.exe",14),p(6,5,"msedgewebview2.exe",15),p(7,1,"msedgewebview2.exe",9)];assert_eq!(owned_descendants(&list,1),vec![1,2,3]);}

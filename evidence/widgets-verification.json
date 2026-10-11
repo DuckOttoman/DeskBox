@@ -1,0 +1,10 @@
+{
+  "executable_sha256": "b07f0d54193d93a5a32ccb687f5d7aff28eea2b5fe916e430d4c2dc5ddd921d5",
+  "portable_archive": "D:\\Users\\Liang\\AppData\\Local\\DeskBox\\deskbox-reconstructed\\deliverables\\deskbox-reconstructed-windows-x64-widgets.zip",
+  "native_widgets": true,
+  "restart_persistence": true,
+  "live_weather_webview": true,
+  "physical_multiple_dpi_displays_tested": false,
+  "default_album_directory": "executable-parent/Albums",
+  "album_source_files_modified": false
+}

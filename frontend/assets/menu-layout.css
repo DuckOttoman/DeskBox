@@ -1,0 +1,9 @@
+/* The original inline submenu can contain all other fences. Keep every row reachable. */
+.pm[data-v-be114263] {
+  min-width: min(208px, calc(100vw - 16px));
+  max-width: min(260px, calc(100vw - 16px));
+  max-height: calc(100vh - 16px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}

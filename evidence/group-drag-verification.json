@@ -1,0 +1,9 @@
+{
+  "native_regression": "passed",
+  "core_tests": "passed",
+  "build": "release locked passed",
+  "independent_review": "pointer capture deferred until movement",
+  "installer_sha256": "d0e0fef394205ea2ac81e1f272c2652360cc6b3887851c3135f518bca3a3a347",
+  "limitations": "Native events were simulated; physical mouse and multiple displays not separately tested.",
+  "installer_test": "passed: install, locked upgrade rejection, startup, video UI, uninstall, user data preserved"
+}

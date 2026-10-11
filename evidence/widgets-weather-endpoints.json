@@ -1,0 +1,12 @@
+[
+  {
+    "url": "https://geocoding-api.open-meteo.com/v1/search?name=Shanghai&count=1&language=zh&format=json",
+    "status": 200,
+    "has_data": true
+  },
+  {
+    "url": "https://api.open-meteo.com/v1/forecast?latitude=31.23&longitude=121.47&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min,weather_code&timezone=auto&forecast_days=3",
+    "status": 200,
+    "has_data": true
+  }
+]

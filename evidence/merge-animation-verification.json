@@ -1,0 +1,14 @@
+{
+  "runtime_archive": "D:\\Users\\Liang\\AppData\\Local\\DeskBox\\deskbox-reconstructed\\deliverables\\deskbox-reconstructed-windows-x64-merge-animation-fix.zip",
+  "executable_sha256": "30b6082953d3424828746075eb59969bae7ab5fd37c3aabb7b711cad0d2a7ec0",
+  "native_webview_animation_checks": [
+    "preview_slots_append_after_existing_items",
+    "preview_first_slot_follows_last_item",
+    "preview_icons_match_target_size",
+    "preview_has_no_body_particles",
+    "cancel_immediately_restores_in_source",
+    "held_contents_never_commits",
+    "contents_release_commits"
+  ],
+  "physical_long_hold_animation_verified": false
+}

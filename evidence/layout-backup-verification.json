@@ -1,0 +1,14 @@
+{
+  "core_tests": "passed",
+  "native_ui": "passed",
+  "restart_persistence": "passed",
+  "backup_time_display": "passed",
+  "deleted_widget_draft_regression": "passed",
+  "independent_review": "3 findings corrected, followup no important findings",
+  "desktop_file_content_backed_up": false,
+  "layout_storage": "user-data/layout-backups.json",
+  "physical_multiscreen_tested": false,
+  "missing_monitor_core_test": "passed",
+  "update_zip_sha256": "c85c98d875eef802f355e36dd18ea12a1937df9814dbdd52c47ef8fb58196c22",
+  "installer_test": "passed: install, upgrade, media UI, uninstall, user data preserved"
+}

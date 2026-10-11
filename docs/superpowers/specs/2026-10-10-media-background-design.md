@@ -1,0 +1,13 @@
+# GIF / Video Fence Backgrounds
+
+Approved user requirements: support animated GIF and video fence backgrounds. Videos have two per-fence options: 节能模式 and 原画模式. Keep all existing fence behavior, especially drag/merge release boundaries.
+
+Media is imported into managed backgrounds storage; never modify the user's source. style.media holds {kind,original,eco,poster,mode}, while style.image is poster to preserve recovered thumbnail/opacity/blur controls. Default video mode eco. Eco is a cached H.264 MP4 no larger than 854x480, preserving aspect ratio without upscaling; frame rate capped within 24–30fps. Original mode uses untranscoded original file at its intrinsic resolution/frame rate; playback smoothness remains hardware-dependent. GIF original remains animated, with a still poster while suspended.
+
+Bundled standalone FFmpeg handles poster and eco generation once during import on a background worker, with limited threads, hidden process, checked exit status, staged files and cleanup on failure. Prepared results are published only after success. Mode switching reuses saved variants. Show preparation/errors in style UI. Copy FFmpeg notices/version into runtime delivery; no system-wide install.
+
+Frontend mounts video/GIF into existing background layers, leaves recovered tint and icon interactions intact, muted loops with cover fit. Suspend decoding when fence collapsed/hidden/not active, document invisible, or system policy reports fullscreen/battery saving; remove source and resume on visibility. GIF suspends by replacing with poster. Settings mount two choices in existing style panel for videos only. Reset preserves imported media but resets mode to eco; remove clears media/image. Poll system policy conservatively and fail safely without CPU spinning.
+
+Backend interfaces: import_fence_background(id,source) for diagnostic import only guarded smoke; pick_fence_image keeps existing name with expanded filter; set_fence_video_mode(id,mode); media_playback_allowed()->bool; all state saves use changed()/clone-save-publish. Core media module exposes prepare_background(source,managed_dir,ffmpeg), validates kind/mode/source/outputs; backend validates managed variants before selecting.
+
+Testing: failing core/FFmpeg tests, frontend source-selection and lifecycle tests, native WebView playback using generated 720p60 and GIF fixtures, intrinsic eco/original dimensions and frame-rate verification, persistence and controls switching, collapsed/global hidden stop/resume, legacy menus/drag/merge smoke. Package current binary plus helper and buildable source. No arbitrary CPU percentage or hardware decode guarantee.

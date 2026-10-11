@@ -1,0 +1,1 @@
+联网组件下载由 ExecWait 改为 nsExec::Exec，并显式指定 PowerShell -WindowStyle Hidden。nsExec 隐藏命令行窗口且保持同步等待，Pop $1 保留退出状态，原下载重试和错误日志不变。WebView2 已使用 silent/install 与隐藏启动；应用 FFmpeg 已使用 CREATE_NO_WINDOW。参考 https://nsis.sourceforge.io/NsExec_plug-in 。

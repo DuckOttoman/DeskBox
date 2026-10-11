@@ -1,0 +1,26 @@
+[
+  {
+    "path": "/assets/index-B3Mcm4P1.js",
+    "table_offset": "0x3e2948",
+    "data_offset": "0x3d580c",
+    "compressed_size": 47722,
+    "size": 135003,
+    "sha256": "cdebf6ab91363cfe7d1361777926231d25d62bc3972a885a0c06b75d67c7053d"
+  },
+  {
+    "path": "/index.html",
+    "table_offset": "0x3e2968",
+    "data_offset": "0x3e1281",
+    "compressed_size": 178,
+    "size": 394,
+    "sha256": "50ed90ab81d07018587d50e9e7b42d53f88463862b134e39b6e4c802c4e15211"
+  },
+  {
+    "path": "/assets/style-CmwEWWp6.css",
+    "table_offset": "0x3e2988",
+    "data_offset": "0x3e134d",
+    "compressed_size": 5624,
+    "size": 26579,
+    "sha256": "6ef8ae1f37eddfcde2c3cf5372958d65e99704fd01e7b0f15816fc3c79093242"
+  }
+]

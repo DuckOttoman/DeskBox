@@ -1,0 +1,14 @@
+{
+  "upgrade_preserves_user_file": true,
+  "payload_hashes": true,
+  "registry": true,
+  "user_data_preserved": true,
+  "install_directory": "D:\\Users\\Liang\\AppData\\Local\\DeskBox\\deskbox-reconstructed\\evidence\\installer-test\\安装验证 app",
+  "install": true,
+  "missing_runtime_clean_vm_tested": false,
+  "autorun_cleanup": true,
+  "installed_media_ui": true,
+  "locked_upgrade_rejected": true,
+  "uninstall": true,
+  "shortcuts": true
+}
