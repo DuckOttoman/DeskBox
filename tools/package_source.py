@@ -7,7 +7,7 @@ import zipfile
 root = Path(__file__).resolve().parents[1]
 output = root / 'deliverables'
 output.mkdir(exist_ok=True)
-files = [root / name for name in ['Cargo.toml', 'Cargo.lock', 'build.rs', 'tauri.conf.json', 'README.md', 'README.en.md', 'LICENSE', 'build.ps1', '.gitignore']]
+files = [root / name for name in ['Cargo.toml', 'Cargo.lock', 'build.rs', 'tauri.conf.json', 'README.md', 'README.en.md', 'LICENSE', 'build.ps1', '.gitignore', '.gitattributes']]
 for directory in ['src', 'dist', 'frontend', 'ui', 'docs', 'icons', 'tests', 'capabilities', 'tools', 'installer']:
     files.extend(p for p in (root / directory).rglob('*') if p.is_file() and '__pycache__' not in p.parts)
 for name in ['assets.json', 'modified-assets.json', 'classification-rules.json', 'commands.json', 'contract.md', 'verification.json', 'rename-review.md', 'native-fidelity-review.md', 'native-fidelity-pixel-comparison.json', 'parity-audit.md', 'context-menu-analysis.md', 'context-menu-review.md', 'fence-widget-interaction-analysis.md', 'fence-widget-interaction-review.md', 'settings-window-analysis.md', 'settings-window-review.md', 'rust-channel.toml']:
