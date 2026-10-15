@@ -4,8 +4,6 @@ English | [简体中文](README.md)
 
 A Windows 10/11 x64 desktop organizer built with Rust, Tauri 2, and WebView2. Organize desktop files in folder boxes, add resizable widgets, and customize animated backgrounds.
 
-This is a buildable reconstruction of an existing DeskBox executable. Frontend assets and classification rules were recovered from the original program; the Rust backend was reimplemented from its command interface, then extended with fixes and features. It is not the original Rust source recovered verbatim.
-
 ## Features
 
 - **Desktop organization:** classification by extension, shortcut target, keywords, and learned preferences; dragging, search, rename, reveal location, properties, and Recycle Bin actions.
