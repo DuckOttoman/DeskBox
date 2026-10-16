@@ -26,3 +26,15 @@ pub mod memory;
 pub mod thermal;
 
 pub mod layout_backup;
+
+pub mod core_temperature;
+pub mod quickbar;
+#[cfg(feature = "gui")]
+pub mod taskbar;
+#[cfg(feature = "gui")]
+mod quickbar_runtime;
+pub mod plugins;
+
+#[cfg(feature = "gui")] pub mod plugin_runtime;
+
+mod plugin_guard;

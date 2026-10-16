@@ -1,0 +1,12 @@
+.ball:not(.pressed):not(.menu):not(:hover) .core{animation:db-ball-breathe var(--db-breath-time,3800ms) ease-in-out infinite}
+@keyframes db-ball-breathe{0%,100%{transform:scale(1);opacity:.83}50%{transform:scale(1.075);opacity:1}}
+.db-motion-paused .ball .core{animation:none!important}
+.db-ball-menu-ghost{pointer-events:none!important;user-select:none}
+.db-timer{position:relative}
+.db-timer-completion-ring{position:absolute;left:50%;top:50%;box-sizing:border-box;border:2px solid var(--accent,var(--menu-text,currentColor));border-radius:50%;pointer-events:none;opacity:0;transform:translate(-50%,-50%)}
+@media(prefers-reduced-motion:reduce){.ball .core{animation:none!important}.db-timer-completion-ring{display:none}}
+
+[data-role="ball"] .pm,[data-role="ball"] .pm-item{animation:none!important}
+.db-ball-menu-ghost *{animation:none!important;transition:none!important}
+.db-motion-paused[data-role="ball"] .pm *, .db-motion-paused[data-role="ball"] .ball,.db-motion-paused[data-role="ball"] .ball *{animation:none!important;transition:none!important}
+@media(prefers-reduced-motion:reduce){[data-role="ball"] .pm *,[data-role="ball"] .ball,[data-role="ball"] .ball *{animation:none!important;transition:none!important}}

@@ -42,13 +42,20 @@ fn shortcut_target(path: &Path) -> Option<String> {
     }
 }
 
-fn cached_icon(item: &Item, directory: &Path) -> Option<String> {
+pub(crate) fn cached_icon(item: &Item, directory: &Path) -> Option<String> {
+    let _apartment=Apartment::enter().ok();
+    fs::create_dir_all(directory).ok()?;
     let path = directory.join(format!("{}.png", crate::state::legacy_item_id(&item.path)));
     if !path.exists() {
         let image = win::shell_image(&item.path, item.kind == "system").ok()?;
         image.save(&path).ok()?;
     }
     Some(path.to_string_lossy().into_owned())
+}
+pub(crate) fn recommendation_allowed(item:&Item)->bool{
+ let _apartment=Apartment::enter().ok();
+ let target=match item.ext.as_str(){"lnk"=>shortcut_target(Path::new(&item.path)).unwrap_or_default(),"url"=>learning::internet_url(&fs::read_to_string(&item.path).unwrap_or_default()),_=>item.path.clone()};
+ crate::quickbar::application_target(&target)
 }
 
 pub fn scan(cache: &Path) -> Result<Vec<Item>, String> {

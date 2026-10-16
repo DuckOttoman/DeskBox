@@ -1,15 +1,19 @@
 [
   {
+    "path": "assets/cpu-temperature.js",
+    "sha256": "98e937ffd67f91ee63093ef34a54794d8798164f57acbb10274dac7324da8c31"
+  },
+  {
     "path": "assets/fence-merge.css",
     "sha256": "73de1d4c38ac38e0586f1675feab7b81a5d51e75b2483644108da9708e23c8b3"
   },
   {
     "path": "assets/fence-merge.js",
-    "sha256": "7f1f3fdbe6aeb2b185ce5b08e3e1d102e818b4dc10a37a42e944c96837c9ded2"
+    "sha256": "033057a02eb0b82fb42ddfc4d6cf059c11dafc88d2aa5c1f76da877b9796e129"
   },
   {
     "path": "assets/index-B3Mcm4P1.js",
-    "sha256": "3e08eef5f3e8fbe65e04db0d053358302234b81b7f1f038128e720a353587e11"
+    "sha256": "4a0e13a4cddd9e4463c83496198157e75cccd5850ab87d6bae39543c5de3edd3"
   },
   {
     "path": "assets/media-background.css",
@@ -28,6 +32,22 @@
     "sha256": "c6679c99f9339299067d78e443702216d86fab236a972e9ca7444674bd55b66f"
   },
   {
+    "path": "assets/plugins.css",
+    "sha256": "299e08a03365ccccce1c25bde84a82f45dfa2f936d14d0773b780fd53cc30763"
+  },
+  {
+    "path": "assets/plugins.js",
+    "sha256": "fe23ebfdb60ced7ea174f4f9afacd00158786687b5c77dda20d7f159d29083c7"
+  },
+  {
+    "path": "assets/quickbar-bridge.css",
+    "sha256": "d8f48daaa781bb9f091eabc4f9e8c82128faf5e8b7adcc931fa160de3472642c"
+  },
+  {
+    "path": "assets/quickbar-bridge.js",
+    "sha256": "db37cf72e1e3c4c0a14b5ccb8132789f9291e272e31374f457b7501b5f129d0d"
+  },
+  {
     "path": "assets/rename-dialog.css",
     "sha256": "8f7a0485f776feb9807f3fd1eb5c316e772cb7accc8f3107850e96a6e9706344"
   },
@@ -40,15 +60,39 @@
     "sha256": "6ef8ae1f37eddfcde2c3cf5372958d65e99704fd01e7b0f15816fc3c79093242"
   },
   {
+    "path": "assets/sysmon-vram.js",
+    "sha256": "179186db752a6bab194a7f506dc958f8e7633f4bf941ef80d0b0d50c10e87d72"
+  },
+  {
+    "path": "assets/widget-ball-motion.css",
+    "sha256": "16db1ed1857f3bf0b265735cca035bb31da3086bd101b188faed53fd2e71ba96"
+  },
+  {
+    "path": "assets/widget-ball-motion.js",
+    "sha256": "2d646ec4abd8e8e2babd9288050ab4f43fd6f7fe6d1a58f43a51530cda252327"
+  },
+  {
     "path": "assets/widgets.css",
-    "sha256": "087145fa7c52b68170611bc212a2849e0350a55a94aa7fb90431f0f76e63853c"
+    "sha256": "eb54d67a9f63ea6383eb9b7a7f420ece0e94f5bf7faf09ecd6ba06b5985a3dcf"
   },
   {
     "path": "assets/widgets.js",
-    "sha256": "f9455eafcbe025484da129c1d5e1dc21d73fa77e8063bb44bd598cb08cd5ea1c"
+    "sha256": "7ebfce0df68c293ef4ede976a196f1c0ebf20632106c523ff968b28ef4c35f12"
   },
   {
     "path": "index.html",
-    "sha256": "4cb20377303e7ff8f9d76921b273a2024bdfef13b5cbbee173107b33e67b37d1"
+    "sha256": "f17b679d93c0980058bc9716a896501abe7060859d0c55eab8ebca67d1347a79"
+  },
+  {
+    "path": "quickbar.css",
+    "sha256": "1d9c81ae910ad7bc12e7468e6cf27ba2308234867e3e2c2096378bbf18367213"
+  },
+  {
+    "path": "quickbar.html",
+    "sha256": "daa14f812e339d9225e6d832a83f602b72842f9ce97be770f142df5ec3f1154c"
+  },
+  {
+    "path": "quickbar.js",
+    "sha256": "38be52a136dec899bc7d35ac3301f1554c008244e22d7ae0f521b4d0d072e5b5"
   }
 ]

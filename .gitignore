@@ -8,3 +8,7 @@
 *.tmp
 .env
 .env.*
+
+# CPU collector build intermediates
+sensor-helper/Dependencies.cs
+sensor-helper/helper-sha256.txt

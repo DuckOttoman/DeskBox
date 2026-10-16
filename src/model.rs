@@ -12,6 +12,8 @@ pub struct Settings {
     pub icon_size: u32,
     pub auto_organize: bool,
     pub hide_desktop_icons: bool,
+    pub hide_taskbar: bool,
+    pub quickbar_count: serde_json::Value,
     pub sysmon_interval_ms: u64,
     pub launch_at_startup: bool,
     pub accent: Option<String>,
@@ -20,7 +22,7 @@ pub struct Settings {
 impl Default for Settings {
     fn default() -> Self {
         Self { opacity: 1., frost: true, icon_size: 48, auto_organize: true,
-            hide_desktop_icons: false, sysmon_interval_ms: 2000,
+            hide_desktop_icons: false, hide_taskbar: false, quickbar_count: serde_json::json!(12), sysmon_interval_ms: 2000,
             launch_at_startup: false, accent: None, anim_speed: 1. }
     }
 }
@@ -64,6 +66,7 @@ pub struct Config {
     pub merge_restores: Vec<MergeRestore>,
     pub widgets: Vec<Widget>,
     pub learned: BTreeMap<String, String>,
+    pub quickbar: crate::quickbar::QuickbarConfig,
     pub ball: Option<[f64; 2]>,
     pub fences_visible: bool,
     pub icons_hidden_by_us: bool,
@@ -72,7 +75,7 @@ pub struct Config {
 impl Default for Config {
     fn default() -> Self {
         Self { version: 1, theme: "glass-dark".into(), settings: Settings::default(), fences: vec![],
-            fence_groups: vec![], merge_restores: vec![], widgets: vec![], learned: BTreeMap::new(), ball: None, fences_visible: true,
+            fence_groups: vec![], merge_restores: vec![], widgets: vec![], learned: BTreeMap::new(), quickbar: Default::default(), ball: None, fences_visible: true,
             icons_hidden_by_us: false, initialized: false }
     }
 }

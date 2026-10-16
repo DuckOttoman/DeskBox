@@ -1,0 +1,5 @@
+use deskbox_reconstructed::core_temperature::decode;
+#[test]fn current_range_not_history(){let s=decode(r#"{"status":"ok","timestamp":10000,"cores":[{"id":"a","value":38.0},{"id":"b","value":61.0}],"package":70}"#,11000);assert_eq!(s.min,Some(38.));assert_eq!(s.max,Some(61.));let s=decode(r#"{"status":"ok","timestamp":12000,"cores":[{"id":"a","value":44.0},{"id":"b","value":46.0}]}"#,12000);assert_eq!(s.min,Some(44.));assert_eq!(s.max,Some(46.));}
+#[test]fn expired_and_invalid_clear_values(){for raw in [r#"{"status":"ok","timestamp":1,"cores":[{"id":"a","value":40.0}]}"#,r#"{"status":"ok","timestamp":10000,"cores":[{"id":"a","value":999.0}]}"#,"invalid"] {let s=decode(raw,11000);assert!(s.min.is_none()&&s.max.is_none());}}
+
+#[test]fn pipe_frame_handles_partial_and_limits(){use deskbox_reconstructed::core_temperature::append_packet;let mut b=Vec::new();assert_eq!(append_packet(&mut b,b"{\"timestamp\":").unwrap(),None);assert_eq!(append_packet(&mut b,b"123}\n").unwrap(),Some("{\"timestamp\":123}".into()));assert!(append_packet(&mut Vec::new(),&vec![b'x';128*1024+1]).is_err());}

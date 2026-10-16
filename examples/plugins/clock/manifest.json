@@ -1,0 +1,1 @@
+{"apiVersion":1,"id":"org.deskbox.examples.clock","name":"Example Clock","version":"1.0.0","author":"DeskBox example contributors","type":"widget","minDeskBoxVersion":"0.1.0","description":"A local clock demonstrating lifecycle and private settings.","entry":"index.html","permissions":{"network":[]}}

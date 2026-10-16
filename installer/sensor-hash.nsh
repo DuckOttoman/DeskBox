@@ -1,0 +1,1 @@
+!define SENSOR_HELPER_SHA256 "ab8ca2d176888ad2ba03bef18d99179f394ec983a98aeae4be99aca1fe5a5dd8"

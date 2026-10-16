@@ -1,5 +1,5 @@
 use crate::model::{Config,Style,Widget};
-pub fn valid_kind(kind:&str)->bool { ["clock","sysmon","timer","notes","album"].contains(&kind) }
+pub fn valid_kind(kind:&str)->bool { ["clock","sysmon","timer","notes","album","plugin"].contains(&kind) }
 pub fn validate_style(style:&Style)->Result<(),String>{
     for (key,min,max) in [("widgetWidth",180.,1200.),("widgetHeight",100.,1000.)] {
         if let Some(value)=style.get(key){let n=value.as_f64().ok_or("Invalid widget size")?;if !n.is_finite()||n<min||n>max{return Err("Invalid widget size".into());}}
@@ -9,6 +9,7 @@ pub fn validate_style(style:&Style)->Result<(),String>{
 }
 pub fn patch_data(config:&mut Config,id:&str,patch:Style)->Result<(),String>{
     let widget=config.widgets.iter_mut().find(|w|w.id==id).ok_or("Widget does not exist")?;
+    if let Some(mode)=patch.get("cpuTemperatureMode"){if widget.kind!="sysmon"||!mode.as_str().is_some_and(|s|["min","max","both"].contains(&s)){return Err("Invalid CPU temperature mode".into());}}
     if patch.contains_key("photos")||patch.contains_key("albumDirectory"){return Err("Use album import commands to update photos".into());}
     let mut style=widget.style.clone();
     let mut data=style.get("widgetData").and_then(|d|d.as_object()).cloned().unwrap_or_default();
@@ -24,6 +25,7 @@ pub fn update_visual(config:&mut Config,mut widget:Widget)->Result<(),String>{
 }
 #[cfg(test)]mod tests{
  use super::*;use crate::model::Widget;use serde_json::json;
+ #[test]fn cpu_temperature_modes_validate_and_preserve(){let mut c=Config::default();c.widgets.push(Widget{id:"cpu".into(),kind:"sysmon".into(),x:0.,y:0.,monitor:"test".into(),style:Style::new()});let mut patch=Style::new();patch.insert("cpuTemperatureMode".into(),json!("both"));patch_data(&mut c,"cpu",patch).unwrap();assert_eq!(c.widgets[0].style["widgetData"]["cpuTemperatureMode"],"both");let mut bad=Style::new();bad.insert("cpuTemperatureMode".into(),json!("history"));assert!(patch_data(&mut c,"cpu",bad).is_err());}
  #[test]fn geometry_bounds(){let mut s=Style::new();s.insert("widgetWidth".into(),json!(179));assert!(validate_style(&s).is_err());s.insert("widgetWidth".into(),json!(460));assert!(validate_style(&s).is_ok());}
  #[test]fn stale_resize_preserves_latest_timer(){let mut c=Config::default();let w=Widget{id:"w".into(),kind:"timer".into(),x:0.,y:0.,monitor:"m".into(),style:Style::new()};c.widgets.push(w.clone());patch_data(&mut c,"w",serde_json::from_value(json!({"timer":{"running":true,"deadline":12345}})).unwrap()).unwrap();let mut resized=w;resized.x=55.;update_visual(&mut c,resized).unwrap();assert_eq!(c.widgets[0].x,55.);assert_eq!(c.widgets[0].style["widgetData"]["timer"]["deadline"],12345);}
  #[test]fn patch_preserves_other_data(){let mut c=Config::default();c.widgets.push(Widget{id:"w".into(),kind:"notes".into(),x:0.,y:0.,monitor:"m".into(),style:serde_json::from_value(json!({"widgetData":{"note":"saved","todos":[]},"radius":20})).unwrap()});patch_data(&mut c,"w",serde_json::from_value(json!({"todos":[{"text":"test","done":true}]})).unwrap()).unwrap();assert_eq!(c.widgets[0].style["widgetData"]["note"],"saved");assert_eq!(c.widgets[0].style["radius"],20);assert!(patch_data(&mut c,"w",serde_json::from_value(json!({"photos":[]})).unwrap()).is_err());}

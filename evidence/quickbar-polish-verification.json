@@ -1,0 +1,41 @@
+{
+  "normalExit": true,
+  "mainCrashRecovery": true,
+  "dom": true,
+  "fullscreenHideRestore": true,
+  "dockAnchoredToScreenBottom": true,
+  "repeatedToggle": true,
+  "protectedFenceGroupWidget": true,
+  "referenceSourcePreserved": true,
+  "nativeNormalEvidence": "quickbar-native-normal-115911",
+  "nativeCrashEvidence": "quickbar-native-crash-115933",
+  "rustPassed": 75,
+  "exeSha256": "c67cd199ac8554f6dc73b93132acdc998db7431a27ce4c4c6ffd90649fc3e528",
+  "hardware": {
+    "monitors": 1,
+    "mixedDpiTested": false,
+    "explorerRestartLiveTested": false
+  },
+  "review": "quickbar-review.md",
+  "scope": "isolated diagnostics; current user configuration and installed binaries not replaced",
+  "menuStateLabels": true,
+  "folderFrameSourcePin": true,
+  "dragVerification": "real WebView handlers and native focus using synthetic PointerEvents; physical mouse cross-window not tested",
+  "polishVisualCapture": "codex-shot-2026-10-16_11-59-17.png",
+  "uiAssertions": 28,
+  "interactionRegression": "QUICKBAR_FRAME_DRAG_AND_MENU_OK",
+  "installer": {
+    "install": true,
+    "installed_media_ui": true,
+    "registry": true,
+    "upgrade_preserves_user_file": true,
+    "shortcuts": true,
+    "uninstall": true,
+    "payload_hashes": true,
+    "missing_runtime_clean_vm_tested": false,
+    "autorun_cleanup": true,
+    "user_data_preserved": true,
+    "locked_upgrade_rejected": true,
+    "install_directory": "D:\\Users\\Liang\\AppData\\Local\\DeskBox\\deskbox-reconstructed\\evidence\\installer-test\\quickbar-polished-final"
+  }
+}

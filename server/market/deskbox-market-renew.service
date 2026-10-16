@@ -1,0 +1,5 @@
+[Unit]
+Description=Renew DeskBox market IP certificate
+[Service]
+Type=oneshot
+ExecStart=/bin/sh /opt/deskbox-market/renew.sh

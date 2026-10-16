@@ -1,0 +1,53 @@
+const assert=require('node:assert/strict');
+const p=require('../ui/plugins.js');
+const win={}; const session={window:win,id:'one',nonce:'secret'};
+const good={source:win,data:{deskbox:1,instance:'one',nonce:'secret',request:1,method:'getTheme',args:[]}};
+assert(p.validMessage(good,session));
+for(const mutation of [{source:{}},{data:{...good.data,nonce:'bad'}},{data:{...good.data,method:'invoke'}},{data:{...good.data,args:['x'.repeat(270000)]}},{data:{...good.data,request:-1}}])assert(!p.validMessage({...good,...mutation},session));
+assert.deepEqual(p.themeVariables({'--evil':'red','--db-plugin-background':'red','--db-plugin-color':'url(https://evil)'}),{'--db-plugin-background':'red'});
+const doc=p.buildDocument('<script>parent.postMessage("x","*")</script>',{},'one','secret');
+assert(doc.includes('default-src &#39;none&#39;')||doc.includes("default-src 'none'"));
+assert(!doc.includes('allow-same-origin'));
+assert(doc.indexOf('window.DeskBox=')<doc.indexOf('parent.postMessage("x"'));
+console.log('plugin UI security tests passed');
+const css=Buffer.from('body{background:url(../image.png)}').toString('base64');
+const resolved=p.buildDocument('<link href="css/main.css"><img src="image.png">',{'css/main.css':'data:text/css;base64,'+css,'image.png':'data:image/png;base64,AA=='},'x','y');
+assert(resolved.includes('<img src="data:image/png;base64,AA==">'));
+const data=resolved.match(/href="data:text\/css;base64,([^\"]+)/)[1];assert(Buffer.from(data,'base64').toString().includes('data:image/png;base64,AA=='));
+// Execute the browser runtime with a small DOM double to exercise real lifecycle decisions.
+(async()=>{
+const vm=require('node:vm'),fs=require('node:fs'),handlers={},calls=[];
+const frame=()=>({sandbox:'',title:'',referrerPolicy:'',setAttribute(){},contentWindow:{postMessage(m){calls.push(['message',m]);}},remove(){this.removed=true;}});
+const doc={hidden:false,documentElement:{style:{setProperty(){},removeProperty(){}}},addEventListener(){},createElement:()=>frame()};
+let items=[{manifest:{id:'org.test.clock',name:'Clock',version:'1.0.0',type:'widget',permissions:{}},enabled:true,source:'test'}];
+const context={window:{addEventListener:(name,fn)=>handlers[name]=fn},document:doc,crypto:require('node:crypto').webcrypto,ResizeObserver:class{observe(){}disconnect(){}},IntersectionObserver:class{observe(){}disconnect(){}},setTimeout,clearTimeout,console,atob,btoa};
+vm.runInNewContext(fs.readFileSync(require.resolve('../ui/plugins.js'),'utf8'),context);
+const api=context.window.DeskBoxPlugins;
+api.bind({state:{config:{widgets:[{id:'w'}]}},region(){},listen:async()=>{},invoke:async(c,a)=>{calls.push([c,a]);if(c==='plugin_list')return items;if(c==='plugin_bundle')return {html:'<p>Hello</p>',resources:{}};return {};}});
+await new Promise(r=>setImmediate(r));
+const el={isConnected:true,clientWidth:300,clientHeight:200,replaceChildren(f){this.child=f;},textContent:''},w={id:'w',kind:'plugin',style:{widgetData:{pluginId:'org.test.clock'}}};
+let vnode;api.content((tag,props)=>{vnode=props;},w);vnode.onVnodeMounted({el});await new Promise(r=>setImmediate(r));
+const original=el.child;assert(original.srcdoc);
+// A request from the actual frame still cannot obtain metrics without manifest permission.
+const match=original.srcdoc.match(/\)\("w","([a-f0-9]+)"\);/);assert(match);
+await handlers.message({source:original.contentWindow,data:{deskbox:1,instance:'w',nonce:match[1],request:1,method:'getSystemMetrics',args:[]}});
+assert(!calls.some(([c])=>c==='plugin_metrics'));assert(calls.some(([c,m])=>c==='message'&&m.error?.includes('permission')));
+items[0].enabled=false;await api.refresh();assert(original.removed);
+items[0].enabled=true;await api.refresh();await new Promise(r=>setImmediate(r));assert.notEqual(el.child,original);const second=el.child;
+items[0].manifest.version='2.0.0';await api.refresh();await new Promise(r=>setImmediate(r));assert(second.removed);assert.notEqual(el.child,second);const third=el.child;await api.refresh(true);await new Promise(r=>setImmediate(r));assert(third.removed);assert.notEqual(el.child,third);
+const crashFrame=el.child;const crashNonce=crashFrame.srcdoc.match(/\)\("w","([a-f0-9]+)"\);/)[1];await handlers.message({source:crashFrame.contentWindow,data:{deskbox:1,instance:'w',nonce:crashNonce,request:7,method:'reportError',args:['<img src=x onerror=evil> crashed']}});assert(crashFrame.removed);assert(el.child.textContent.includes('<img src=x onerror=evil>'));assert.equal(el.child.className,'db-plugin-error');const errorCard=el.child;vnode.onVnodeUpdated({el});await api.refresh();assert.equal(el.child,errorCard);await api.refresh(true);await new Promise(r=>setImmediate(r));assert.notEqual(el.child,errorCard);assert(el.child.srcdoc);vnode.onVnodeUnmounted();assert(el.child.removed);
+// Placeholder mounted before catalogue load recovers on refresh.
+items=[];await api.refresh();const el2={...el,child:null};api.content((t,p)=>{vnode=p;},w);vnode.onVnodeMounted({el:el2});assert(!el2.child);items=[{manifest:{id:'org.test.clock',name:'Clock',version:'2.0.0',type:'widget'},enabled:true}];await api.refresh();await new Promise(r=>setImmediate(r));assert(el2.child.srcdoc);
+console.log('plugin lifecycle and permission tests passed');
+})().catch(e=>{console.error(e);process.exitCode=1;});
+assert(p.permissionsText({systemMetrics:true}).includes('系统指标：允许'));
+assert(p.permissionsText({}).includes('系统指标：不允许'));
+assert(p.buildDocument('<script src="main.js"></script>',{'nested/main.js':'data:text/javascript;base64,QQ=='},'x','y','nested/index.html').includes('src="data:text/javascript;base64,QQ=="'));
+assert.equal(p.backgroundImage('https://example.com/x.png'),null);
+assert.equal(p.backgroundImage('javascript:alert(1)'),null);
+assert.equal(p.backgroundImage('data:image/svg+xml;base64,AA=='),null);
+assert.equal(p.backgroundImage('data:image/png;base64,AA==");color:red;/*'),null);
+assert.equal(p.backgroundImage('data:image/png;base64,AA=='),'url("data:image/png;base64,AA==")');
+assert.deepEqual(p.themeVariables({'--db-plugin-font':'\\75rl(x)','--db-plugin-background':'@import x'}),{});
+for(const value of ['image-set("https://evil")','-webkit-image-set("https://evil")','image("https://evil")','src("https://evil")','image/**/-set("https://evil")'])assert.deepEqual(p.themeVariables({'--db-plugin-background':value}),{});
+assert.equal(p.themeVariables({'--db-plugin-background':'linear-gradient(45deg,rgb(0 0 0),#fff)'})['--db-plugin-background'],'linear-gradient(45deg,rgb(0 0 0),#fff)');

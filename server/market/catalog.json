@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "entries": [
+    {
+      "id": "org.deskbox.examples.clock",
+      "name": "Example Clock",
+      "description": "A local clock demonstrating lifecycle and private settings.",
+      "author": "DeskBox example contributors",
+      "type": "widget",
+      "version": "1.0.0",
+      "url": "https://47.85.175.203/packages/clock-1.0.0.deskbox-plugin",
+      "sha256": "c9d864839c9ef3127f1c0ff87119203850bcbf50194d9557d6fe177a182e8eb6"
+    },
+    {
+      "id": "org.deskbox.examples.mist",
+      "name": "Mist Theme",
+      "description": "A restrained blue-gray theme; contains no scripts.",
+      "author": "DeskBox example contributors",
+      "type": "theme",
+      "version": "1.0.1",
+      "url": "https://47.85.175.203/packages/mist-1.0.1.deskbox-plugin",
+      "sha256": "3a805bff89117898ce3e4bb6df4c2db7fcfe7debffa71a3e1e103ebb2a8723ef"
+    }
+  ]
+}

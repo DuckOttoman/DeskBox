@@ -1,0 +1,37 @@
+{
+  "date": "2026-10-15",
+  "release_build": true,
+  "core_regression_passed": 64,
+  "policy_csharp": true,
+  "ui_mode_policy": true,
+  "cancel_feedback_simulated": true,
+  "real_i7_13700k_cores": 16,
+  "native_ui_modes_and_current_readings": true,
+  "restart_persistence": true,
+  "ordinary_client_demand_start": true,
+  "service_idle_exit": true,
+  "service_install_remove_reinstall": true,
+  "portable_same_account_and_retry": true,
+  "pipe_disconnect_survival": true,
+  "installer_install_upgrade_uninstall_user_data": true,
+  "final_update_hashes_and_embedded_helper_pin": true,
+  "service_process_acl_changed": false,
+  "auto_review_rejection_resolved_by_scm_verification": true,
+  "alternate_admin_portable_tested": false,
+  "amd_hardware_tested": false,
+  "missing_driver_clean_vm_tested": false,
+  "real_user_uac_cancel_tested": false,
+  "normal_app_updated": false,
+  "normal_config_modified": false,
+  "github_uploaded": false,
+  "artifacts": {
+    "DeskBox-Reconstructed-2026-10-15-cpu-temperature-update.zip": {
+      "bytes": 9669338,
+      "sha256": "839197bb3563ca72807ef336ad05e7f46dbe7900f401ddb931f81ea51bb80f0f"
+    },
+    "DeskBox-Reconstructed-0.1.0-windows-x64-online-setup.exe": {
+      "bytes": 9801564,
+      "sha256": "7a9351d2a97107a7c78c31e5113eaedcb651220634f28b6d1224158e3f9991a0"
+    }
+  }
+}

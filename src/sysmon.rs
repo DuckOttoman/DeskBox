@@ -9,6 +9,11 @@ pub struct Sample {
     pub cpu_usage: Option<f64>,
     pub cpu_mhz: u32,
     pub cpu_temp: Option<f64>,
+    pub cpu_core_min: Option<f64>,
+    pub cpu_core_max: Option<f64>,
+    pub cpu_package_temp: Option<f64>,
+    pub cpu_thermal_zone: Option<f64>,
+    pub cpu_temp_status: String,
     pub mem_used: u64,
     pub mem_total: u64,
     pub gpu_name: String,
@@ -82,11 +87,11 @@ impl Drop for Nvml {
     }
 }
 
-pub struct Sampler { previous: Option<(u64, u64)>, nvml: Option<Nvml>, name: String, mhz: u32, thermal: Option<crate::thermal::Thermal> }
+pub struct Sampler { core: crate::core_temperature::Collector, previous: Option<(u64, u64)>, nvml: Option<Nvml>, name: String, mhz: u32, thermal: Option<crate::thermal::Thermal> }
 impl Sampler {
     pub fn new() -> Self {
         let cpu = windows_registry::LOCAL_MACHINE.open(r"HARDWARE\DESCRIPTION\System\CentralProcessor\0").ok();
-        Self { previous: None, nvml: Nvml::open(), thermal: crate::thermal::Thermal::open(),
+        Self { core: crate::core_temperature::Collector::new(), previous: None, nvml: Nvml::open(), thermal: crate::thermal::Thermal::open(),
             name: cpu.as_ref().and_then(|k| k.get_string("ProcessorNameString").ok()).unwrap_or_else(|| "CPU".into()),
             mhz: cpu.and_then(|k| k.get_u32("~MHz").ok()).unwrap_or(0) }
     }
@@ -105,7 +110,9 @@ impl Sampler {
             let mut mem = MemoryStatus { length: std::mem::size_of::<MemoryStatus>() as u32, ..Default::default() };
             if GlobalMemoryStatusEx(&mut mem) != 0 { sample.mem_total = mem.total_phys; sample.mem_used = mem.total_phys - mem.avail_phys; }
         }
-        sample.cpu_temp = self.thermal.as_ref().and_then(|t|t.sample());
+        sample.cpu_thermal_zone = self.thermal.as_ref().and_then(|t|t.sample());
+        let core=self.core.sample();sample.cpu_core_min=core.min;sample.cpu_core_max=core.max;
+        sample.cpu_package_temp=core.package;sample.cpu_temp_status=core.status;sample.cpu_temp=core.max;
         if let Some(nvml) = &self.nvml { nvml.sample(&mut sample); }
         sample
     }

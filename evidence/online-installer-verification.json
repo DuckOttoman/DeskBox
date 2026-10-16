@@ -1,4 +1,4 @@
-﻿{
+{
     "install":  true,
     "installed_media_ui":  true,
     "registry":  true,
@@ -10,5 +10,5 @@
     "autorun_cleanup":  true,
     "user_data_preserved":  true,
     "locked_upgrade_rejected":  true,
-    "install_directory":  "D:\\Users\\Liang\\AppData\\Local\\DeskBox\\deskbox-reconstructed\\evidence\\installer-test\\布局备份安装验证 app"
+    "install_directory":  "D:\\Users\\Liang\\AppData\\Local\\DeskBox\\deskbox-reconstructed\\evidence\\installer-test\\plugin-v1-final"
 }

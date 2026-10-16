@@ -1,0 +1,15 @@
+[Unit]
+Description=DeskBox read-only HTTPS plugin catalog
+Requires=deskbox-market.socket
+After=network.target deskbox-market.socket
+[Service]
+User=deskbox-market
+Group=deskbox-market
+ExecStart=/usr/bin/python3 /opt/deskbox-market/market.py --root /var/lib/deskbox-market/public --socket-activation --cert /etc/deskbox-market/tls/cert.pem --key /etc/deskbox-market/tls/key.pem
+Restart=on-failure
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+[Install]
+WantedBy=multi-user.target

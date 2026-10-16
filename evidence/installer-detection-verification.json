@@ -1,0 +1,20 @@
+{
+  "date": "2026-10-15",
+  "policy_tests": true,
+  "compiled_real_detection": true,
+  "actual_path_over_stale_registration": true,
+  "compiled_all_components_matching": true,
+  "webview_runtime_detected": true,
+  "global_service_reused": true,
+  "explicit_stale_registered_directory_preserved": true,
+  "explicit_default_directory_preserved": true,
+  "isolated_install_upgrade_uninstall": true,
+  "normal_install_modified": false,
+  "normal_registry_modified": false,
+  "new_page_pixel_reviewed": false,
+  "missing_webview_clean_vm_tested": false,
+  "github_uploaded": false,
+  "installer": "DeskBox-Reconstructed-2026-10-15-detection-fixed-online-setup.exe",
+  "bytes": 9807755,
+  "sha256": "b9ca7cd1a5296cc55725111cf9cd601500485c0be14a5cd3cce585314b6d6aa0"
+}

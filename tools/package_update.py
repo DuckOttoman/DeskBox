@@ -2,9 +2,14 @@
 from pathlib import Path
 import hashlib,json,zipfile
 import argparse
-parser=argparse.ArgumentParser();parser.add_argument('--layout-backup',action='store_true');args=parser.parse_args()
+parser=argparse.ArgumentParser();parser.add_argument('--layout-backup',action='store_true');parser.add_argument('--motion',action='store_true');args=parser.parse_args()
 root=Path(__file__).resolve().parents[1]
-if args.layout_backup:
+if args.motion:
+ for role,marker in [('ball','BALL_MOTION_NATIVE_SUCCESS'),('timer','TIMER_MOTION_NATIVE_SUCCESS')]:
+  log=(root/f'evidence/{role}-motion-final/runtime.log').read_text(encoding='utf8')
+  assert marker in log and 'FRONTEND_ERROR' not in log
+ assert 'Finished `release` profile' in (root/'evidence/widget-ball-motion-final-build.log').read_text(encoding='utf8')
+elif args.layout_backup:
  log=(root/'evidence/layout-backup-final-native/runtime.log').read_text(encoding='utf8')
  assert 'LAYOUT_BACKUP_NATIVE_SUCCESS' in log and 'LAYOUT_BACKUP_RESTART_SUCCESS' in log and 'FRONTEND_ERROR' not in log
  assert 'Finished `release` profile' in (root/'evidence/layout-backup-final-build.log').read_text(encoding='utf8')
@@ -25,7 +30,8 @@ notes=r"""DeskBox 替换更新包（2026-10-11）
 新增 CPU 温度采集使用原版所用的 Windows 热区计数器。读数取决于主板固件，不一定代表 CPU 核心温度；不支持时显示未提供。
 """
 if args.layout_backup:notes+='\n此版新增布局备份/还原管理：每项显示备份时间，可还原、重命名、删除。备份保存在应用用户数据目录。\n'
-output=root/('deliverables/DeskBox-Reconstructed-2026-10-11-layout-backup-update.zip' if args.layout_backup else 'deliverables/DeskBox-Reconstructed-2026-10-11-update.zip')
+if args.motion:notes+='\n此版增加番茄钟完成扩散圆环与轻微弹动、悬浮球闲置呼吸以及菜单展开/收回；遵循系统减少动态效果设置。\n'
+output=root/('deliverables/DeskBox-Reconstructed-2026-10-11-motion-update.zip' if args.motion else 'deliverables/DeskBox-Reconstructed-2026-10-11-layout-backup-update.zip' if args.layout_backup else 'deliverables/DeskBox-Reconstructed-2026-10-11-update.zip')
 with zipfile.ZipFile(output,'w',zipfile.ZIP_DEFLATED) as z:
  for name in files:z.write(root/'target/release'/name,name)
  z.writestr('更新说明.txt',notes.encode('utf8'))

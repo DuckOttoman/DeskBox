@@ -1,0 +1,7 @@
+[Unit]
+Description=Check DeskBox market short-lived certificate daily
+[Timer]
+OnCalendar=*-*-* 03:25:00
+Persistent=true
+[Install]
+WantedBy=timers.target

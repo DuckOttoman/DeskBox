@@ -1,0 +1,13 @@
+{
+  "apiVersion": 1,
+  "id": "org.deskbox.examples.mist",
+  "name": "Mist Theme",
+  "version": "1.0.1",
+  "author": "DeskBox example contributors",
+  "type": "theme",
+  "minDeskBoxVersion": "0.1.0",
+  "description": "A restrained blue-gray theme; contains no scripts.",
+  "permissions": {
+    "network": []
+  }
+}

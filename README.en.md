@@ -4,7 +4,11 @@ English | [简体中文](README.md)
 
 A Windows 10/11 x64 desktop organizer built with Rust, Tauri 2, and WebView2. Organize desktop files in folder boxes, add resizable widgets, and customize animated backgrounds.
 
+Current version: **0.2.0**. This repository contains the application source, plugin SDK, bilingual developer documentation, and market service.
+
 ## Features
+
+- **Plugins (API v1):** Settings → Plugins supports a catalog, HTTPS URLs and local packages for themes and sandboxed widgets, with permission previews, enable/disable, update checks and uninstall. See the [developer guide](docs/plugins.en.md) and `examples/plugins`.
 
 - **Desktop organization:** classification by extension, shortcut target, keywords, and learned preferences; dragging, search, rename, reveal location, properties, and Recycle Bin actions.
 - **Folder boxes:** individual styles, dimensions, collapse/hide controls, icon-label visibility, GIF/video backgrounds, and rounded clipping.
@@ -20,6 +24,8 @@ A Windows 10/11 x64 desktop organizer built with Rust, Tauri 2, and WebView2. Or
 
 Layout backups store box/widget positions, sizes, properties, and frame-group relationships, not desktop file lists. Restoring reclassifies the current desktop while retaining current notes, tasks, album contents, and timer runtime state. Deleted widgets return with empty contents. Backups are stored in `layout-backups.json` in the application’s user-data directory.
 
+Timer completion adds a brief expanding ring, gentle bounce, and notice. The floating ball breathes while idle, and its menu expands from and retracts to the ball. Effects follow the theme, animation-speed setting, and the system reduced-motion preference.
+
 ## Installation and updates
 
 Use the generated online installer for a per-user installation. It downloads missing WebView2 and FFmpeg components in the background with console windows hidden. An existing WebView2 runtime is reused.
@@ -30,7 +36,7 @@ For an existing installation, use a replacement-update ZIP:
 2. Replace `deskbox-reconstructed.exe` and `WebView2Loader.dll` in the installation directory with the ZIP’s files.
 3. Keep `media-tools`, `Albums`, and the user-data directory, then restart.
 
-The default installation path is `%LOCALAPPDATA%\Programs\DeskBox Reconstructed`. Settings use the separate application identifier `com.deskbox.reconstructed`. Exiting restores desktop icons hidden by this application.
+The default installation path is `%LOCALAPPDATA%\Programs\DeskBox`. Settings use the separate application identifier `com.deskbox.reconstructed`. Exiting restores desktop icons hidden by this application.
 
 Installers, update bundles, and build caches are excluded from this source repository and generated locally.
 
@@ -85,7 +91,7 @@ For the particular local TLS environment addressed by this project, `.\build.ps1
 | `installer/` | NSIS setup and dependency download scripts |
 | `tools/` | Build, frontend generation, and packaging utilities |
 | `docs/` | Usage guides, designs, and implementation records |
-| `evidence/` | Selected reconstruction evidence and verification records |
+| `evidence/` | Design and verification records |
 
 ## Verification and limitations
 
@@ -98,3 +104,8 @@ See the [widget guide](docs/widgets.md) and [layout-backup design](docs/superpow
 ## License
 
 The repository’s existing [GNU GPL v3 license](LICENSE) is retained. Third-party dependencies, recovered assets, and FFmpeg remain subject to their respective source licenses and accompanying notices.
+
+CPU core temperature: right-click System Status → CPU temperature → minimum core, maximum core, or both. Values are computed from the current sample, not historical extremes. First enablement requests administrator authorization: installed builds register a demand-start service under Program Files; portable builds elevate only the collector. DeskBox stays unelevated. Unsupported per-core sensors are reported unavailable; package and ACPI readings remain explicitly identified fallback information. The collector exits after about one minute without requests. The shared PawnIO component is retained when uninstalling DeskBox.
+Build the collector first using `python tools/build_sensor_helper.py` (official LibreHardwareMonitor 0.9.6 and PawnIO 2.2.0 with release digest verification), then follow the Rust build steps. Windows .NET Framework 4.7.2 or later is required. Dependency licenses are included in sensor-tools.
+
+Quick access bar: enable Hide taskbar in Settings → Behavior for themed pinned references, desktop-application launch recommendations, and protected bottom space. System taskbars are restored on exit or main-process failure. See [quick access bar details (Chinese)](docs/quick-access-bar.md).

@@ -1,6 +1,10 @@
 param([switch]$LocalToolchain)
 $ErrorActionPreference = 'Stop'
 Set-Location -LiteralPath $PSScriptRoot
+python tools\build_sensor_helper.py
+if ($LASTEXITCODE -ne 0) { throw 'CPU collector build failed' }
+python tools\patch_frontend.py
+if ($LASTEXITCODE -ne 0) { throw 'Frontend generation failed' }
 if ($LocalToolchain) {
     if (-not (Test-Path -LiteralPath '.tools\rust\bin\cargo.exe')) {
         python tools\bootstrap_rust.py
@@ -24,3 +28,5 @@ Write-Host "Built: $PSScriptRoot\bin\deskbox-reconstructed.exe"
 if (Test-Path -LiteralPath 'target\release\media-tools') {
     Copy-Item -LiteralPath 'target\release\media-tools' -Destination 'bin' -Recurse -Force
 }
+
+Copy-Item -LiteralPath 'target\release\sensor-tools' -Destination 'bin' -Recurse -Force

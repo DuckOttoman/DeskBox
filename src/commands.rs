@@ -109,7 +109,10 @@ pub async fn item_action(app: tauri::AppHandle, window: WebviewWindow, data: Sha
     let item = data.snapshot()?.items.into_iter().find(|i| i.id == id).ok_or("Item does not exist")?;
     let owner = window.hwnd().map_err(|e| e.to_string())?.0 as isize;
     let recycled = action == "recycle";
-    tauri::async_runtime::spawn_blocking(move || scanner::action(&item, &action, owner)).await.map_err(|e| e.to_string())??;
+    let opening = action == "open";
+    let launch_path=item.path.clone();
+    let launched=tauri::async_runtime::spawn_blocking(move || {let eligible=opening&&scanner::recommendation_allowed(&item);scanner::action(&item, &action, owner)?;Ok::<bool,String>(eligible)}).await.map_err(|e| e.to_string())??;
+    if launched {data.mutate(|c|{crate::quickbar::record_launch(&mut c.quickbar,&launch_path,crate::quickbar::now());Ok(())})?;data.publish(&app)?;}
     if recycled {
         let data = data.inner().clone();
         tauri::async_runtime::spawn_blocking(move || data.refresh(&app, false, false)).await.map_err(|e| e.to_string())??;
@@ -184,18 +187,23 @@ pub fn set_theme(app: tauri::AppHandle, data: Shared<'_>, theme: String) -> Resu
     changed(&app, &data, |c| { c.theme = theme; Ok(()) })
 }
 #[tauri::command]
-pub fn update_settings(app: tauri::AppHandle, data: Shared<'_>, settings: Settings) -> Result<(), String> {
+pub async fn update_settings(app: tauri::AppHandle, data: Shared<'_>, settings: Settings) -> Result<(), String> {
     use tauri_plugin_autostart::ManagerExt;
     if !settings.opacity.is_finite() || !(0.1..=1.).contains(&settings.opacity)
         || !(28..=80).contains(&settings.icon_size) || !(1000..=10000).contains(&settings.sysmon_interval_ms)
-        || !settings.anim_speed.is_finite() || !(0.2..=5.).contains(&settings.anim_speed) { return Err("Invalid settings values".into()); }
+        || !settings.anim_speed.is_finite() || !(0.2..=5.).contains(&settings.anim_speed)
+        || !crate::quickbar::valid_count(&settings.quickbar_count) { return Err("Invalid settings values".into()); }
     let previous = data.snapshot()?.config;
     if !data.smoke && previous.settings.launch_at_startup != settings.launch_at_startup {
         if settings.launch_at_startup { app.autolaunch().enable() } else { app.autolaunch().disable() }.map_err(|e| e.to_string())?;
     }
     let hide = settings.hide_desktop_icons && previous.fences_visible;
+    if let Err(e)=crate::quickbar_runtime::set_enabled(&app,data.inner(),settings.hide_taskbar).await {
+        if !data.smoke && previous.settings.launch_at_startup != settings.launch_at_startup {let _=if previous.settings.launch_at_startup{app.autolaunch().enable()}else{app.autolaunch().disable()};}return Err(e);
+    }
     if let Err(error) = data.mutate(|c| { c.settings = settings; Ok(()) }) {
         if !data.smoke { let _ = if previous.settings.launch_at_startup { app.autolaunch().enable() } else { app.autolaunch().disable() }; }
+        let _=crate::quickbar_runtime::set_enabled(&app,data.inner(),previous.settings.hide_taskbar).await;
         return Err(error);
     }
     if !data.smoke { win::desktop_icons(hide)?; }
@@ -448,5 +456,13 @@ pub async fn layout_backup_action(app:tauri::AppHandle,data:Shared<'_>,action:St
    _=>return Err("未知布局备份操作".into())
   }
   Ok(serde_json::json!({"backups":b::summaries(&list),"missingBackgrounds":missing}))
+ }).await.map_err(|e|e.to_string())?
+}
+
+#[tauri::command]
+pub async fn enable_cpu_temperature()->Result<(),String>{
+ tauri::async_runtime::spawn_blocking(||{
+ let dir=std::env::current_exe().map_err(|e|e.to_string())?;
+ crate::core_temperature::request_enable(dir.parent().is_some_and(|p|p.join("uninstall.exe").is_file()))
  }).await.map_err(|e|e.to_string())?
 }

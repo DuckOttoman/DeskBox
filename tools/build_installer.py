@@ -29,8 +29,10 @@ def build(test=False,online=False):
     command='$s=Get-AuthenticodeSignature -LiteralPath $env:DESKBOX_WEBVIEW_INSTALLER; $s.Status.ToString(); $s.SignerCertificate.Subject; if ($s.Status -ne "Valid" -or $s.SignerCertificate.Subject -notlike "*O=Microsoft Corporation*") {exit 1}'
     signed=subprocess.CompletedProcess([],0,'Verified by installer at download time','') if online else subprocess.run(['powershell','-NoProfile','-Command',command],env=env,capture_output=True,text=True)
     if signed.returncode:raise RuntimeError('Microsoft runtime signature verification failed: '+signed.stdout+signed.stderr)
-    output=ROOT/('evidence/installer-test/DeskBox-online-test-setup.exe' if test and online else 'evidence/installer-test/DeskBox-test-setup.exe' if test else 'deliverables/DeskBox-Reconstructed-0.1.0-windows-x64-online-setup.exe' if online else 'deliverables/DeskBox-Reconstructed-0.1.0-windows-x64-setup.exe')
+    output=ROOT/('evidence/installer-test/DeskBox-online-test-setup.exe' if test and online else 'evidence/installer-test/DeskBox-test-setup.exe' if test else 'deliverables/DeskBox-0.2.0-windows-x64-online-setup.exe' if online else 'deliverables/DeskBox-0.2.0-windows-x64-setup.exe')
     output.parent.mkdir(parents=True,exist_ok=True)
+    detect_files=['deskbox-reconstructed.exe','WebView2Loader.dll','media-tools/ffmpeg.exe']+['sensor-tools/'+p.name for p in sorted((ROOT/'target/release/sensor-tools').iterdir()) if p.is_file()]
+    (ROOT/'installer/payload-hashes.json').write_text(json.dumps({p:digest(ROOT/'target/release'/p) for p in detect_files},indent=2),encoding='utf8')
     args=[str(compiler),'/V3','/INPUTCHARSET','UTF8',f'/DROOT={ROOT}',f'/DWEBVIEW={runtime.parent}',f'/DOUTPUT={output}']
     if online:args+=['/DONLINE']
     if test:args+=['/DAPP_KEY=DeskBoxReconstructed.InstallerTest','/DAPP_NAME=DeskBox Installer Verification','/DAUTOSTART_NAME=DeskBoxInstallerVerificationAutostart']
@@ -40,6 +42,7 @@ def build(test=False,online=False):
         result=subprocess.run(args,cwd=ROOT,stdout=f,stderr=subprocess.STDOUT)
     if result.returncode:raise RuntimeError(f'NSIS build failed; see {log}')
     payload=['deskbox-reconstructed.exe','WebView2Loader.dll','media-tools/ffmpeg.exe','media-tools/FFmpeg-LICENSE.txt','media-tools/FFmpeg-VERSION.txt']
+    payload += ['sensor-tools/'+p.name for p in sorted((ROOT/'target/release/sensor-tools').iterdir()) if p.is_file()]
     manifest={'installer':str(output),'installer_sha256':digest(output),'bytes':output.stat().st_size,'target':'Windows 10/11 x64','scope':'current user','signed_setup':False,'mode':'online' if online else 'offline','webview_url':'https://go.microsoft.com/fwlink/p/?LinkId=2124703' if online else WEBVIEW_URL,'webview_sha256':None if online else digest(runtime),'webview_publisher':signed.stdout.strip(),'nsis_url':NSIS_URL,'nsis_archive_sha256':digest(archive),'payload':{p:digest(ROOT/'target/release'/p) for p in payload}}
     (output.parent/(output.stem+'-manifest.json')).write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding='utf-8')
     print(json.dumps(manifest,ensure_ascii=False,indent=2),flush=True)

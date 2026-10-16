@@ -12,6 +12,7 @@ pub struct AppState {
     pub desktop_check: bool,
     pub settings_window: Mutex<()>,
     pub filesystem_operation: Mutex<()>,
+    pub quickbar: Mutex<crate::quickbar_runtime::Runtime>,
     pub diagnostic_scan_started: AtomicBool,
     pub diagnostic_scan_finished: AtomicBool,
     pub smoke_ready: Mutex<BTreeSet<String>>,
@@ -41,6 +42,7 @@ impl AppState {
         let mut data = self.snapshot.lock().map_err(|_| "State lock poisoned")?;
         let mut next = data.config.clone();
         let result = change(&mut next)?;
+        crate::quickbar::protect(&mut next, &data.monitors);
         config::save(&self.directory.join("config.json"), &next)?;
         data.config = next;
         Ok(result)
@@ -73,6 +75,7 @@ impl AppState {
                 state::collect_inbox(&mut next, &items, &monitor.name, [monitor.w as f64 / monitor.scale, monitor.h as f64 / monitor.scale]);
             }
         }
+        crate::quickbar::protect(&mut next, &data.monitors);
         config::save(&self.directory.join("config.json"), &next)?;
         data.config = next; data.items = items; data.ready = true;
         drop(data);
@@ -93,6 +96,7 @@ impl AppState {
             let mut data = self.snapshot.lock().map_err(|_| "State lock poisoned")?;
             let mut next = data.config.clone();
             state::remap_item(&mut next, &old, &new);
+            crate::quickbar::remap(&mut next.quickbar,&old.path,&new.path);
             config::save(&self.directory.join("config.json"), &next)?;
             data.config = next;
             data.items = items;
@@ -108,7 +112,7 @@ impl AppState {
     }
 }
 
-fn monitors(app: &tauri::AppHandle) -> Result<Vec<Monitor>, String> {
+pub(crate) fn monitors(app: &tauri::AppHandle) -> Result<Vec<Monitor>, String> {
     let primary = app.primary_monitor().map_err(|e| e.to_string())?;
     let all = app.available_monitors().map_err(|e| e.to_string())?;
     Ok(all.into_iter().enumerate().map(|(i, m)| {
@@ -120,6 +124,20 @@ fn monitors(app: &tauri::AppHandle) -> Result<Vec<Monitor>, String> {
                 (work.right - work.left) as f64 / scale, (work.bottom - work.top) as f64 / scale],
             primary: primary.as_ref().is_some_and(|p| p.position() == position) }
     }).collect())
+}
+
+pub(crate) fn sync_monitors(app:&tauri::AppHandle,data:&AppState)->Result<(),String>{
+ let monitors=monitors(app)?;
+ for m in &monitors{
+  let w=if let Some(w)=app.get_webview_window(&m.label){w}else{
+   WebviewWindowBuilder::new(app,&m.label,WebviewUrl::App("index.html".into())).title("DeskBox 桌面整理")
+    .inner_size(m.w as f64/m.scale,m.h as f64/m.scale).decorations(false).transparent(true).shadow(false).resizable(false).skip_taskbar(true).focused(false).visible(false).data_directory(data.directory.join("webview")).build().map_err(|e|e.to_string())?
+  };
+  w.set_position(PhysicalPosition::new(m.x,m.y)).map_err(|e|e.to_string())?;w.set_size(tauri::PhysicalSize::new(m.w,m.h)).map_err(|e|e.to_string())?;
+  w.show().map_err(|e|e.to_string())?;win::attach_overlay(w.hwnd().map_err(|e|e.to_string())?.0 as isize,m.x,m.y,m.w,m.h)?;
+ }
+ for(label,w)in app.webview_windows(){if label.starts_with("overlay-")&&!monitors.iter().any(|m|m.label==label){let _=w.close();}}
+ data.snapshot.lock().map_err(|_|"State lock")?.monitors=monitors;Ok(())
 }
 
 pub fn smoke_script(enabled: bool) -> String {
@@ -186,9 +204,9 @@ pub fn smoke_script(enabled: bool) -> String {
         let current = await state();
         let fence = current.config.fences.find(f => f.id === fenceId);
         check('create_fence', !!fence && fence.monitor === m.name);
-        fence.title = '重建接口测试'; fence.category = 'document';
+        fence.title = '接口测试'; fence.category = 'document';
         await invoke('update_fence', {fence});
-        check('update_fence', (await state()).config.fences.find(f => f.id === fenceId).title === '重建接口测试');
+        check('update_fence', (await state()).config.fences.find(f => f.id === fenceId).title === '接口测试');
         if (initial.items.length) {
           const item = initial.items[0].id;
           await invoke('move_item', {item, to: fenceId, index: 0});
@@ -327,7 +345,7 @@ pub fn open_settings(app: &tauri::AppHandle, data: &AppState) -> Result<(), Stri
         return Ok(());
     }
     let window = WebviewWindowBuilder::new(app, "settings", WebviewUrl::App("index.html".into()))
-        .title("DeskBox 重建版设置").inner_size(820., 640.).min_inner_size(700., 520.)
+        .title("DeskBox 设置").inner_size(820., 640.).min_inner_size(700., 520.)
         .decorations(false).resizable(true).center().visible(!data.smoke || std::env::args().any(|x| x == "--ball-settings-check" || x == "--tray-settings-check"))
         .data_directory(data.directory.join("webview"))
         .initialization_script(smoke_script(data.smoke)).build().map_err(|e| e.to_string())?;
@@ -366,6 +384,7 @@ fn start_workers(app: tauri::AppHandle, data: Arc<AppState>) {
         let mut icons_at = Instant::now(); let mut icon_error = None;
         let mut sample_at = Instant::now(); let mut scan_at = Instant::now(); let mut previous_down = false;
         while !data.stopping.load(Ordering::Relaxed) {
+            crate::quickbar_runtime::tick(&app,&data);
             if data.watch_outside.load(Ordering::Relaxed) {
                 if let Some(ball) = app.get_webview_window("ball") {
                     if let Ok(handle) = ball.hwnd() {
@@ -380,9 +399,10 @@ fn start_workers(app: tauri::AppHandle, data: Arc<AppState>) {
                 if let Ok(snapshot) = data.snapshot() {
                     let interval = snapshot.config.settings.sysmon_interval_ms.clamp(1000, 10000);
                     if sample_at.elapsed() >= Duration::from_millis(interval) {
-                        if snapshot.config.fences_visible && snapshot.config.widgets.iter().any(|w| w.kind == "sysmon")
+                        if snapshot.config.fences_visible && (snapshot.config.widgets.iter().any(|w| w.kind == "sysmon") || crate::plugin_runtime::metrics_requested(&data))
                             && (data.smoke || !win::fullscreen_foreground()) {
                             let sample = sampler.sample();
+                            crate::plugin_runtime::cache_metrics(serde_json::to_value(&sample).unwrap_or_default());
                             let _ = app.emit("sysmon", &sample);
                             if data.smoke { data.log(format!("sysmon {}", serde_json::to_string(&sample).unwrap_or_default())); }
                         }
@@ -399,6 +419,7 @@ fn start_workers(app: tauri::AppHandle, data: Arc<AppState>) {
                 icons_at = Instant::now();
             }
             if scan_at.elapsed() >= Duration::from_secs(5) {
+                crate::quickbar_runtime::topology_tick(&app,&data);
                 if let Err(error) = data.refresh(&app, false, false) { data.log(format!("Scan: {error}")); }
                 scan_at = Instant::now();
             }
@@ -408,6 +429,7 @@ fn start_workers(app: tauri::AppHandle, data: Arc<AppState>) {
 }
 
 pub fn run() {
+    if let Some(code)=crate::taskbar::watchdog_main(&std::env::args().collect::<Vec<_>>()){std::process::exit(code);}
     if std::env::args().any(|x| x == "--native-check") {
         let result = native_check();
         if let Err(error) = &result {
@@ -431,6 +453,7 @@ pub fn run() {
     let application = builder.plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_autostart::Builder::new().args(["--autostart"]).build())
         .invoke_handler(tauri::generate_handler![
+            crate::plugin_runtime::plugin_list, crate::plugin_runtime::plugin_preview, crate::plugin_runtime::plugin_install, crate::plugin_runtime::plugin_enable, crate::plugin_runtime::plugin_uninstall, crate::plugin_runtime::plugin_catalog, crate::plugin_runtime::plugin_check_update, crate::plugin_runtime::plugin_settings, crate::plugin_runtime::plugin_fetch, crate::plugin_runtime::plugin_metrics, crate::plugin_runtime::plugin_bundle, crate::plugin_runtime::plugin_pick_file, crate::plugin_runtime::plugin_create_widget,
             commands::get_state, commands::rename_item, commands::set_region, commands::update_fence, commands::create_fence,
             commands::move_fence_group, commands::group_fences, commands::select_fence, commands::detach_fence, commands::merge_fence_contents, commands::restore_fence_merge,
             commands::delete_fence, commands::move_item, commands::item_action, commands::organize_now,
@@ -438,16 +461,22 @@ pub fn run() {
             commands::patch_widget_data, commands::widget_album_action, commands::widget_interaction,
             commands::open_widget_weather_source,
             commands::set_theme, commands::update_settings, commands::save_ball, commands::open_settings_window,
-            commands::request_layout_backup, commands::layout_backup_action, commands::apply_weather_location, commands::optimize_memory, commands::reset_learned, commands::quit_app, commands::keyboard_focus, commands::pick_fence_image,
+            commands::request_layout_backup, commands::layout_backup_action, commands::apply_weather_location, commands::optimize_memory, commands::enable_cpu_temperature, commands::reset_learned, commands::quit_app, commands::keyboard_focus, commands::pick_fence_image,
             commands::import_fence_background, commands::set_fence_video_mode, commands::media_playback_allowed,
             commands::clear_fence_image, commands::watch_outside_click, commands::frontend_ready, commands::frontend_error,
             commands::frontend_checks_passed, commands::settings_test_probe,
+            crate::quickbar_runtime::quickbar_state, crate::quickbar_runtime::quickbar_ready, crate::quickbar_runtime::quickbar_regions,
+            crate::quickbar_runtime::quickbar_pin, crate::quickbar_runtime::quickbar_open, crate::quickbar_runtime::quickbar_remove,
+            crate::quickbar_runtime::quickbar_undo, crate::quickbar_runtime::quickbar_reorder,
+            crate::quickbar_runtime::quickbar_drag_preview,
+            crate::quickbar_runtime::quickbar_dom_report, crate::quickbar_runtime::quickbar_test_status,
         ])
         .setup(move |application| {
             let app = application.handle().clone();
             let directory = std::env::var_os("DESKBOX_DATA_DIR").map(PathBuf::from)
                 .unwrap_or(app.path().app_local_data_dir()?);
             fs::create_dir_all(&directory)?;
+            if !smoke { crate::taskbar::recover_stale(&directory).map_err(std::io::Error::other)?; }
             if smoke {
                 let fixtures = directory.join("rename-fixtures");
                 fs::create_dir_all(&fixtures)?;
@@ -457,12 +486,12 @@ pub fn run() {
             let mut config = if smoke { config::load(&directory.join("config.json"))? }
                 else { config::upgrade_legacy(&directory, original_directory.as_deref())? };
             config.icons_hidden_by_us = false;
-            if smoke { config.settings.hide_desktop_icons = false; config.settings.launch_at_startup = false; }
+            if smoke { config.settings.hide_desktop_icons = false; config.settings.launch_at_startup = false; config.settings.hide_taskbar = false; }
             let monitors = monitors(&app).map_err(std::io::Error::other)?;
             let wallpaper = scanner::wallpaper(&directory);
             let data = Arc::new(AppState { snapshot: Mutex::new(Snapshot { config, items: vec![], monitors: monitors.clone(),
                 categories: classify::categories(), wallpaper, ready: false }), directory, smoke, desktop_check,
-                settings_window: Mutex::new(()), filesystem_operation: Mutex::new(()), diagnostic_scan_started: AtomicBool::new(false), diagnostic_scan_finished: AtomicBool::new(false),
+                settings_window: Mutex::new(()), filesystem_operation: Mutex::new(()), quickbar:Mutex::new(Default::default()), diagnostic_scan_started: AtomicBool::new(false), diagnostic_scan_finished: AtomicBool::new(false),
                 watch_outside: AtomicBool::new(false), stopping: AtomicBool::new(false),
                 smoke_ready: Mutex::new(BTreeSet::new()), smoke_error: AtomicBool::new(false), smoke_contract_passed: AtomicBool::new(false),
                 smoke_rename_menu_passed: AtomicBool::new(false) });
@@ -470,10 +499,10 @@ pub fn run() {
             app.asset_protocol_scope().allow_directory(&data.directory, true)?;
             crate::widget_album::allow_saved(&app,&data);
             data.refresh(&app, false, false).map_err(std::io::Error::other)?;
-            data.log("Reconstructed backend initialized");
+            data.log("DeskBox backend initialized");
             for monitor in &monitors {
                 let window = WebviewWindowBuilder::new(&app, &monitor.label, WebviewUrl::App("index.html".into()))
-                    .title(if drag_session {"DeskBox 拖动验证"} else {"DeskBox 桌面整理（重建版）"}).inner_size(monitor.w as f64 / monitor.scale, monitor.h as f64 / monitor.scale)
+                    .title(if drag_session {"DeskBox 拖动验证"} else {"DeskBox 桌面整理"}).inner_size(monitor.w as f64 / monitor.scale, monitor.h as f64 / monitor.scale)
                     .position(monitor.x as f64 / monitor.scale, monitor.y as f64 / monitor.scale)
                     .decorations(false).transparent(true).shadow(false).resizable(false).skip_taskbar(true)
                     .focused(false).visible(false).data_directory(data.directory.join("webview"))
@@ -492,7 +521,7 @@ pub fn run() {
                 primary.x as f64 + primary.w as f64 - 100. * primary.scale,
                 primary.y as f64 + 130. * primary.scale]);
             let ball = WebviewWindowBuilder::new(&app, "ball", WebviewUrl::App("index.html".into()))
-                .title("DeskBox Ball（重建版）").inner_size(600., 600.).decorations(false)
+                .title("DeskBox").inner_size(600., 600.).decorations(false)
                 .transparent(true).shadow(false).always_on_top(true).skip_taskbar(true).resizable(false)
                 .focused(false).visible(!smoke).data_directory(data.directory.join("webview"))
                 .initialization_script(smoke_script(smoke)).build()?;
@@ -506,7 +535,7 @@ pub fn run() {
                 let settings = MenuItem::with_id(&app, "settings", "设置", true, None::<&str>)?;
                 let quit = MenuItem::with_id(&app, "quit", "退出", true, None::<&str>)?;
                 let menu = Menu::with_items(&app, &[&toggle, &organize, &settings, &quit])?;
-                TrayIconBuilder::new().icon(app.default_window_icon().unwrap().clone()).tooltip("DeskBox 重建版")
+                TrayIconBuilder::new().icon(app.default_window_icon().unwrap().clone()).tooltip("DeskBox")
                     .menu(&menu).on_menu_event(|app, event| {
                         dispatch_tray_action(app, event.id.as_ref());
                     }).build(&app)?;
@@ -529,6 +558,12 @@ pub fn run() {
                     }
                 });
             }
+            if !smoke && data.snapshot().map_err(std::io::Error::other)?.config.settings.hide_taskbar {
+                let a=app.clone();let d=data.clone();tauri::async_runtime::spawn(async move{
+                    if let Err(e)=crate::quickbar_runtime::set_enabled(&a,&d,true).await{d.log(format!("快捷栏启动失败，保留系统任务栏：{e}"));let _=a.emit("quickbar-error",e);}
+                    else{let _=d.mutate(|_|Ok(()));let _=d.publish(&a);}
+                });
+            }
             start_workers(app, data);
             Ok(())
         })
@@ -538,6 +573,7 @@ pub fn run() {
         if matches!(event, tauri::RunEvent::Exit | tauri::RunEvent::ExitRequested { .. }) {
             if let Some(data) = app.try_state::<Arc<AppState>>() {
                 data.stopping.store(true, Ordering::Relaxed);
+                if let Err(error)=crate::quickbar_runtime::disable(app,&data){data.log(error);}
                 if let Err(error) = win::shutdown_desktop_icons() { data.log(error); }
                 if let Err(error) = data.mutate(|c| { c.icons_hidden_by_us = false; Ok(()) }) { data.log(error); }
             }

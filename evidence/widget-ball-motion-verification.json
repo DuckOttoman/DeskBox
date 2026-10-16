@@ -1,0 +1,14 @@
+{
+  "release_build": true,
+  "duration_policy": true,
+  "widget_regression": true,
+  "native_ball": true,
+  "native_timer": true,
+  "rapid_reopen_cleanup": true,
+  "reduced_motion_css_and_waapi": true,
+  "installer_install_upgrade_uninstall": true,
+  "update_hashes": true,
+  "physical_mouse_and_multiple_monitors_separately_tested": false,
+  "missing_runtime_clean_vm_tested": false,
+  "github_uploaded": false
+}

@@ -1,0 +1,12 @@
+{
+  "variables": {
+    "--db-plugin-background": "rgba(30,45,64,0.93)",
+    "--db-plugin-color": "#edf4ff",
+    "--db-plugin-accent": "#9bc7ef",
+    "--db-plugin-border": "1px solid rgba(178,207,235,0.3)",
+    "--db-plugin-radius": "16px",
+    "--db-plugin-shadow": "0 8px 24px rgba(0,0,0,0.22)",
+    "--db-plugin-font": "Segoe UI, sans-serif"
+  },
+  "backgroundImage": "assets/mist.png"
+}

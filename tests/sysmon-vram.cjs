@@ -1,0 +1,2 @@
+const assert=require('node:assert/strict');const {text,ratio}=require('../ui/sysmon-vram.js');
+assert.equal(text({vramUsed:2.125*1024**3,vramTotal:8*1024**3}),'2.1 / 8.0 GB');assert.equal(text({vramUsed:0,vramTotal:8*1024**3}),'0.0 / 8.0 GB');assert.equal(text({vramUsed:null,vramTotal:8*1024**3}),'— / 8.0 GB');assert.equal(ratio({vramUsed:4,vramTotal:8}),.5);assert.equal(ratio({vramUsed:10,vramTotal:8}),1);assert.equal(ratio({vramUsed:null,vramTotal:8}),0);console.log('VRAM_FORMAT_POLICY_OK');

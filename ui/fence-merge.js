@@ -184,10 +184,12 @@
     if(mode==='group'){src.classList.add('db-merge-header');dst.classList.add('db-merge-header');}
     else {
       dst.classList.add('db-merge-content'); dst.style.zIndex='10000';
-      const left=Math.max(0,Math.min(innerWidth-originalBounds.width*1.5,originalBounds.left-originalBounds.width*.25));
-      const top=Math.max(0,Math.min(innerHeight-originalBounds.height*1.5,originalBounds.top-originalBounds.height*.25));
-      dst.style.transformOrigin='0 0';dst.style.transform=`translate(${left-originalBounds.left}px,${top-originalBounds.top}px) scale(1.5)`;
-      const expanded={left,top,right:left+originalBounds.width*1.5,bottom:top+originalBounds.height*1.5};
+      const bounds=window.DeskBoxQuickbar?.bounds()||{left:0,top:0,right:innerWidth,bottom:innerHeight};
+      const zoom=config()?.settings.hideTaskbar?Math.min(1.5,(bounds.right-bounds.left)/originalBounds.width,(bounds.bottom-bounds.top)/originalBounds.height):1.5;
+      const left=Math.max(bounds.left,Math.min(bounds.right-originalBounds.width*zoom,originalBounds.left-originalBounds.width*(zoom-1)/2));
+      const top=Math.max(bounds.top,Math.min(bounds.bottom-originalBounds.height*zoom,originalBounds.top-originalBounds.height*(zoom-1)/2));
+      dst.style.transformOrigin='0 0';dst.style.transform=`translate(${left-originalBounds.left}px,${top-originalBounds.top}px) scale(${zoom})`;
+      const expanded={left,top,right:left+originalBounds.width*zoom,bottom:top+originalBounds.height*zoom};
       for(const el of document.querySelectorAll('[data-fence]')){if(el===src||el===dst)continue;const r=el.getBoundingClientRect();if(r.right>expanded.left&&r.left<expanded.right&&r.bottom>expanded.top&&r.top<expanded.bottom){dimmed.push([el,el.style.opacity]);el.style.opacity='.1';}}
       const grid=dst.querySelector?.('.grid');
       const targetItems=new Set(fence(target)?.items||[]);

@@ -1,0 +1,28 @@
+{
+  "host": "47.85.175.203",
+  "catalog": "https://47.85.175.203/catalog.json",
+  "health": "https://47.85.175.203/health",
+  "httpsExternallyVerified": true,
+  "catalogEmptyUntilExamplesPublished": false,
+  "serviceUser": "deskbox-market",
+  "service": "deskbox-market.service",
+  "socket": "deskbox-market.socket",
+  "renewalTimer": "deskbox-market-renew.timer",
+  "renewalCommandChecked": true,
+  "futureRenewalNotSimulated": true,
+  "privateFilesHttpStatus": 404,
+  "serverUnitTests": 7,
+  "serverSourceSha256": "e3917415cac40d116bc67d9d652a74e42b21b3e9c6ae66c1defad70e5bc109d8",
+  "publishedPackages": [
+    {
+      "id": "org.deskbox.examples.clock",
+      "version": "1.0.0",
+      "sha256": "c9d864839c9ef3127f1c0ff87119203850bcbf50194d9557d6fe177a182e8eb6"
+    },
+    {
+      "id": "org.deskbox.examples.mist",
+      "version": "1.0.1",
+      "sha256": "3a805bff89117898ce3e4bb6df4c2db7fcfe7debffa71a3e1e103ebb2a8723ef"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
+const listeners=new Map(),calls=[],previews=[];let focusBlur=false,commits=0,rejectPreview=false,rejectPending;
+const win={addEventListener:(t,f)=>{if(!listeners.has(t))listeners.set(t,new Set());listeners.get(t).add(f)},removeEventListener:(t,f)=>listeners.get(t)?.delete(f)};
+const element=()=>({className:'',style:{},setAttribute(){},remove(){},setPointerCapture(){},releasePointerCapture(){}});
+const state={items:{one:{path:'C:\\Desktop\\One.lnk',name:'One'}},monitors:[{label:'overlay-0',h:1080,scale:1,work:[0,0,1920,984]}],config:{settings:{hideTaskbar:true},fences:[{id:'source',items:['one']}]}};
+const emit=(type,e={})=>{e.type=type;for(const f of [...(listeners.get(type)||[])])f(e)};
+vm.runInNewContext(fs.readFileSync('ui/quickbar-bridge.js','utf8'),{window:win,document:{body:{append(){}},createElement:element,documentElement:{classList:{add(){},remove(){}}}},innerWidth:1920,innerHeight:1080,performance:{now:()=>1000},Promise,setTimeout,console});
+const q=win.DeskBoxQuickbar,flush=()=>new Promise(r=>setImmediate(r));
+q.bind({state,label:'overlay-0',invoke:async(c,a)=>{if(c==='quickbar_drag_preview'){previews.push(a);if(rejectPreview&&a.id){rejectPreview=false;return new Promise((resolve,reject)=>rejectPending=reject);}return;}calls.push({c,a});if(c==='get_state')return {config:state.config};},hold:()=>()=>{},region(){},focus:async on=>{if(on&&focusBlur){await Promise.resolve();emit('blur');await Promise.resolve();}}});
+const e=(x,y,button=0)=>({pointerId:7,button,clientX:x,clientY:y,currentTarget:element()});
+(async()=>{
+ assert.equal(q.menuEntry(state.config).label,'恢复任务栏');state.config.settings.hideTaskbar=false;assert.equal(q.menuEntry(state.config).label,'隐藏任务栏');state.config.settings.hideTaskbar=true;
+ await q.menuEntry(state.config).action();assert.equal(calls.at(-1).a.settings.hideTaskbar,false);state.config.settings.hideTaskbar=false;await q.menuEntry(state.config).action();assert.equal(calls.at(-1).a.settings.hideTaskbar,true);state.config.settings.hideTaskbar=true;calls.length=0;
+ const drag={id:null,target:null},start=()=>q.itemPointer(e(100,100),'one','source',{drag,target:()=>{drag.target='other'},commit:()=>commits++});
+ focusBlur=true;start();emit('pointermove',e(900,1040));await flush();await flush();assert.equal(drag.id,'one');assert.equal(calls.length,0,'hover never commits');assert.equal(previews.at(-1)?.id,'one','drag image relayed into native dock');
+ emit('pointerup',e(900,1040,2));assert.equal(calls.length,0,'right release never pins');emit('pointerup',e(900,1040));await flush();assert.equal(calls.at(-1).c,'quickbar_pin');assert.equal(commits,0);await flush();assert.equal(previews.at(-1)?.id,null,'release clears relayed image');assert.deepEqual(state.config.fences[0].items,['one']);
+ calls.length=0;focusBlur=false;start();emit('pointermove',e(900,1040));emit('pointercancel',e(900,1040));await flush();assert.equal(calls.length,0);
+ start();emit('pointermove',e(400,400));await flush();emit('pointerup',e(400,400));await flush();assert.equal(commits,1,'ordinary frame-to-frame move remains');
+ start();emit('pointermove',e(900,1040));await flush();emit('blur');emit('pointerup',e(900,1040));await flush();assert.equal(calls.length,0,'genuine focus loss cancels');
+ rejectPreview=true;start();emit('pointermove',e(900,1040));await flush();emit('pointercancel',e(900,1040));rejectPending(new Error('source changed'));await flush();await flush();assert.equal(previews.at(-1).id,null,'failed move must not discard queued terminal clear');
+ console.log('QUICKBAR_FRAME_DRAG_AND_MENU_OK');
+})().catch(e=>{console.error(e);process.exitCode=1});

@@ -1,6 +1,6 @@
 {
   "identifier": "desktop",
   "description": "Original local frontend window and event APIs",
-  "windows": ["ball", "settings", "overlay-*"],
+  "windows": ["ball", "settings", "overlay-*", "quickbar-*"],
   "permissions": ["core:default", "core:window:allow-start-dragging", "core:window:allow-close", "core:window:allow-minimize", "dialog:default"]
 }

@@ -1,0 +1,2 @@
+# VRAM display
+User requested and approved matching the existing memory value presentation. Show a separate VRAM header/value row (one decimal used / total GB) and matching theme usage bar, preserving polling and widget geometry. Unknown usage remains a dash; no total keeps the existing unsupported-device behavior. This follows the user-specified existing visual design. Validate pure formatting and actual native refresh/typography, rebuild online installer and replacement bundle. No GitHub upload.

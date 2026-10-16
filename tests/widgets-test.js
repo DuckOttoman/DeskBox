@@ -12,7 +12,7 @@ const context={window:{addEventListener(){}},document:{visibilityState:'visible'
 vm.runInNewContext(fs.readFileSync(require.resolve('../ui/widgets.js'),'utf8'),context);
 const api=context.window.DeskBoxWidgets;
 const widget={id:'test',kind:'notes',style:{widgetWidth:320,widgetHeight:240,widgetData:{note:'saved',todos:[{id:'todo',text:'task',done:true}]}}};
-api.bind({state:{config:{widgets:[widget]}},asset:x=>x});
+api.bind({listen:()=>Promise.resolve(()=>{}),state:{config:{widgets:[widget]}},asset:x=>x});
 const tree=api.content((tag,props,children)=>({tag,props,children}),widget);
 function walk(n){if(!n||typeof n!=='object')return;if(n.props?.class)assert.equal(typeof n.props.class,'string');for(const child of Array.isArray(n.children)?n.children:[])walk(child);}
 walk(tree);assert.equal(tree.children[2].children[0].props.class,'db-todo done');

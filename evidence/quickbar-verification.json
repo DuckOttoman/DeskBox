@@ -1,0 +1,21 @@
+{
+  "normalExit": true,
+  "mainCrashRecovery": true,
+  "dom": true,
+  "fullscreenHideRestore": true,
+  "dockAnchoredToScreenBottom": true,
+  "repeatedToggle": true,
+  "protectedFenceGroupWidget": true,
+  "referenceSourcePreserved": true,
+  "nativeNormalEvidence": "quickbar-native-normal-180909",
+  "nativeCrashEvidence": "quickbar-native-crash-180935",
+  "rustPassed": 91,
+  "exeSha256": "4fae34e3c54cd654369db424a60e1295302d9f70f852fdf711f5a91d039458e4",
+  "hardware": {
+    "monitors": 1,
+    "mixedDpiTested": false,
+    "explorerRestartLiveTested": false
+  },
+  "review": "quickbar-review.md",
+  "scope": "isolated diagnostics; current user configuration and installed binaries not replaced"
+}

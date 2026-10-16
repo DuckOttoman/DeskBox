@@ -1,0 +1,106 @@
+{
+  "nativeSuccess": true,
+  "nativeEvidence": "plugins-native-180900",
+  "checks": [
+    "plugin_preview_no_execution_widget",
+    "plugin_preview_no_execution_theme",
+    "plugin_theme_applied",
+    "plugin_theme_image_applied",
+    "plugin_theme_restored",
+    "plugin_sdk_ready_runs_in_sandbox",
+    "plugin_opaque_sandbox",
+    "plugin_forged_message_rejected",
+    "plugin_resize_large",
+    "plugin_disable_destroys_frame",
+    "plugin_enable_restores_frame",
+    "plugin_uninstall_destroys_frame",
+    "plugin_url_reinstall_preserves_private_settings",
+    "plugin_url_reinstall_restores_existing_layout_slot",
+    "plugin_runtime_error_safe_card_no_frame",
+    "plugin_runtime_error_resize_does_not_remount",
+    "plugin_native_navigation_guard_block_event_received",
+    "plugin_native_navigation_guard_keeps_original_script_alive",
+    "plugin_settings_tab_and_installed_cards_render",
+    "plugin_market_gui_catalog_loaded",
+    "plugin_settings_gui_success",
+    "PLUGIN_NATIVE_SUCCESS"
+  ],
+  "rustPassed": 91,
+  "packagerTests": 10,
+  "marketTests": 7,
+  "uiSecurityAndLifecycle": true,
+  "quickbarRegression": {
+    "normalExit": true,
+    "mainCrashRecovery": true,
+    "dom": true,
+    "fullscreenHideRestore": true,
+    "dockAnchoredToScreenBottom": true,
+    "repeatedToggle": true,
+    "protectedFenceGroupWidget": true,
+    "referenceSourcePreserved": true,
+    "nativeNormalEvidence": "quickbar-native-normal-180909",
+    "nativeCrashEvidence": "quickbar-native-crash-180935",
+    "rustPassed": 91,
+    "exeSha256": "4fae34e3c54cd654369db424a60e1295302d9f70f852fdf711f5a91d039458e4",
+    "hardware": {
+      "monitors": 1,
+      "mixedDpiTested": false,
+      "explorerRestartLiveTested": false
+    },
+    "review": "quickbar-review.md",
+    "scope": "isolated diagnostics; current user configuration and installed binaries not replaced"
+  },
+  "server": {
+    "host": "47.85.175.203",
+    "catalog": "https://47.85.175.203/catalog.json",
+    "health": "https://47.85.175.203/health",
+    "httpsExternallyVerified": true,
+    "catalogEmptyUntilExamplesPublished": false,
+    "serviceUser": "deskbox-market",
+    "service": "deskbox-market.service",
+    "socket": "deskbox-market.socket",
+    "renewalTimer": "deskbox-market-renew.timer",
+    "renewalCommandChecked": true,
+    "futureRenewalNotSimulated": true,
+    "privateFilesHttpStatus": 404,
+    "serverUnitTests": 7,
+    "serverSourceSha256": "e3917415cac40d116bc67d9d652a74e42b21b3e9c6ae66c1defad70e5bc109d8",
+    "publishedPackages": [
+      {
+        "id": "org.deskbox.examples.clock",
+        "version": "1.0.0",
+        "sha256": "c9d864839c9ef3127f1c0ff87119203850bcbf50194d9557d6fe177a182e8eb6"
+      },
+      {
+        "id": "org.deskbox.examples.mist",
+        "version": "1.0.1",
+        "sha256": "3a805bff89117898ce3e4bb6df4c2db7fcfe7debffa71a3e1e103ebb2a8723ef"
+      }
+    ]
+  },
+  "exeSha256": "4fae34e3c54cd654369db424a60e1295302d9f70f852fdf711f5a91d039458e4",
+  "limitations": [
+    "Single-monitor native test environment; mixed-DPI not exercised",
+    "Future certificate renewal not simulated across multiple days",
+    "GUI unit-test executable loader unavailable; no-GUI regressions and actual GUI integration both verified"
+  ],
+  "installer": {
+    "install": true,
+    "installed_media_ui": true,
+    "registry": true,
+    "upgrade_preserves_user_file": true,
+    "shortcuts": true,
+    "uninstall": true,
+    "payload_hashes": true,
+    "missing_runtime_clean_vm_tested": false,
+    "autorun_cleanup": true,
+    "user_data_preserved": true,
+    "locked_upgrade_rejected": true,
+    "install_directory": "D:\\Users\\Liang\\AppData\\Local\\DeskBox\\deskbox-reconstructed\\evidence\\installer-test\\plugin-v1-final"
+  },
+  "installerTestUsesFreshDataDirectory": true,
+  "reviews": [
+    "plugin-backend-review.md",
+    "plugin-frontend-market-review.md"
+  ]
+}
